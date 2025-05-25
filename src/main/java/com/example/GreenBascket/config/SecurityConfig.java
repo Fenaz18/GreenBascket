@@ -1,6 +1,6 @@
 package com.example.GreenBascket.config;
 
-import com.example.CropCart.security.JwtAuthenticationFilter;
+import com.example.GreenBascket.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
