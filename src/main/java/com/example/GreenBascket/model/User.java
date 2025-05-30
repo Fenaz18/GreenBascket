@@ -1,11 +1,9 @@
 package com.example.GreenBascket.model;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+
 
 @Entity
 @Table(name="Users")
@@ -27,6 +25,10 @@ public class User {
 
     @Column (nullable = false)
     private  String password;
+
+
+    @Transient
+    private String confirmpassword;
 
     @Column(nullable = false)
     private String role;
@@ -90,5 +92,13 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getConfirmpassword() {
+        return confirmpassword;
+    }
+
+    public void setConfirmpassword(String confirmpassword) {
+        this.confirmpassword = confirmpassword;
     }
 }

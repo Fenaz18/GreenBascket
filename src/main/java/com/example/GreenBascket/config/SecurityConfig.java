@@ -1,6 +1,7 @@
 package com.example.GreenBascket.config;
 
 import com.example.GreenBascket.security.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,4 +29,6 @@ public class SecurityConfig { // Wrap your configuration in a class
                 .formLogin(login -> login.disable());
         return http.build();
     }
+
+
 }
