@@ -23,6 +23,7 @@ public class UserController {
     @Autowired // This annotation tells Spring to inject an instance of JwtUtil
     private JwtUtil jwtUtil; // This declares the variable named 'jwtUtil'
 
+    @CrossOrigin(origins = "http://localhost:3001")
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@Valid @RequestBody RegisterRequestDTO dto) {
         if (!dto.getPassword().equals(dto.getConfirmPassword())) {
@@ -41,7 +42,8 @@ public class UserController {
         return ResponseEntity.ok("User registered successfully!");
     }
 
-
+    // You can also apply it to individual methods if needed
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> loginUser(@RequestBody LoginRequestDTO loginRequest) {
         User user = userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
