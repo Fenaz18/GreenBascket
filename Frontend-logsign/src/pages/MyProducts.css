@@ -1,0 +1,28 @@
+.my-products-container {
+  display: flex;
+  height: 100vh;
+}
+
+.my-products-content {
+  flex: 1;
+  padding: 50px;
+}
+
+.my-products-content h2 {
+  margin-bottom: 30px;
+  color: #3c763d;
+}
+
+.product-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.product-card {
+  background-color: #ecfdf5;
+  border: 1px solid #d4e9d4;
+  border-radius: 12px;
+  padding: 20px;
+  width: 220px;
+}

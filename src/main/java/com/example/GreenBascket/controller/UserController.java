@@ -1,33 +1,35 @@
 package com.example.GreenBascket.controller;
 
-import com.example.GreenBascket.dto.LoginRequestDTO;
-import com.example.GreenBascket.dto.LoginResponseDTO;
-import com.example.GreenBascket.dto.RegisterRequestDTO;
+import com.example.GreenBascket.dto.*;
 import com.example.GreenBascket.model.User;
 import com.example.GreenBascket.security.JwtUtil;
+import com.example.GreenBascket.security.UserPrincipal;
 import com.example.GreenBascket.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin(origins = "http://localhost:3002") // Apply CORS globally to the controller
 public class UserController {
-
 
     @Autowired
     private UserService userService;
 
-    @Autowired // This annotation tells Spring to inject an instance of JwtUtil
-    private JwtUtil jwtUtil; // This declares the variable named 'jwtUtil'
+    @Autowired
+    private JwtUtil jwtUtil;
 
-    @CrossOrigin(origins = "http://localhost:3001")
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody RegisterRequestDTO dto) {
+    public ResponseEntity<MessageResponseDTO> registerUser(@Valid @RequestBody RegisterRequestDTO dto) {
         if (!dto.getPassword().equals(dto.getConfirmPassword())) {
-            return ResponseEntity.badRequest().body("Passwords do not match");
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponseDTO("Passwords do not match"));
         }
 
         User user = new User();
@@ -35,28 +37,49 @@ public class UserController {
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
         user.setRole(dto.getRole());
-        user.setPhone(dto.getPhone());         // ✅ set phone
-        user.setLocation(dto.getLocation());   // ✅ set location
+        user.setPhone(dto.getPhone());
+        user.setLocation(dto.getLocation());
 
         userService.registerUser(user);
-        return ResponseEntity.ok("User registered successfully!");
+        return ResponseEntity.ok(new MessageResponseDTO("User registered successfully!"));
     }
 
-    // You can also apply it to individual methods if needed
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> loginUser(@RequestBody LoginRequestDTO loginRequest) {
         User user = userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
         UserDetails userDetails = userService.loadUserByUsername(user.getEmail());
 
-        // Generate JWT token
         String token = jwtUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(new LoginResponseDTO(
+        LoginResponseDTO response = new LoginResponseDTO(
                 user.getUserId(), user.getName(), user.getEmail(),
-                user.getRole(), user.getLocation(), user.getPhone(), token // ⬅️ include token
-        ));
+                user.getRole(), user.getLocation(), user.getPhone(), token
+        );
+
+        return ResponseEntity.ok(response);
+    }
+    /**
+     * Endpoint to get the profile of the currently authenticated user.
+     * Maps to GET /api/users/profile
+     */
+    @GetMapping("/profile")
+    @PreAuthorize("isAuthenticated()") // Ensure user is authenticated
+    public ResponseEntity<UserProfileResponseDTO> getUserProfile(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        UserProfileResponseDTO profile = userService.getUserProfile(userPrincipal.getUserId());
+        return ResponseEntity.ok(profile);
     }
 
-
+    /**
+     * Endpoint to update the profile of the currently authenticated user.
+     * Maps to PUT /api/users/profile
+     */
+    @PutMapping("/profile")
+    @PreAuthorize("isAuthenticated()") // Ensure user is authenticated
+    public ResponseEntity<UserProfileResponseDTO> updateUserProfile(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody UserProfileRequestDTO requestDTO) {
+        UserProfileResponseDTO updatedProfile = userService.updateUserProfile(userPrincipal.getUserId(), requestDTO);
+        return ResponseEntity.ok(updatedProfile);
+    }
 }
+

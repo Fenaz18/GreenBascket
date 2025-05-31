@@ -1,0 +1,80 @@
+.add-product-container {
+  display: flex;
+  height: 100vh;
+}
+
+/* Change .add-product-form to .add-product-form-content */
+.add-product-form-content {
+  flex: 1;
+  padding: 50px;
+  /* Add messages styling if you included it earlier, e.g. */
+  padding-top: 20px; /* Adjust if needed */
+  padding-bottom: 20px; /* Adjust if needed */
+}
+
+.add-product-form-content h2 { /* Change this */
+  color: #3c763d;
+  margin-bottom: 30px;
+}
+
+.add-product-form-content form { /* Change this */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 400px;
+  margin: 0 auto; /* Center the form within its container */
+}
+
+.add-product-form-content input, /* Change this */
+.add-product-form-content textarea { /* Change this */
+  padding: 10px;
+  border: 1px solid #b2d8b2;
+  border-radius: 6px;
+}
+
+.add-product-form-content button { /* Change this */
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Add a little transition */
+}
+
+.add-product-form-content button:hover:not([disabled]) {
+  background-color: #45a049;
+}
+
+/* Also ensure you have styles for your message classes */
+.message {
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.message.error {
+  background-color: #ffe0e0;
+  color: #d32f2f;
+  border: 1px solid #d32f2f;
+}
+
+.message.success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #2e7d32;
+}
+
+.message.loading {
+  background-color: #e0f7fa;
+  color: #00838f;
+  border: 1px solid #00838f;
+}
+
+button[disabled] {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

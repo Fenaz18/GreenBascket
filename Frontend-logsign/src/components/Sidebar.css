@@ -1,0 +1,83 @@
+/* src/components/Sidebar.css */
+
+.sidebar {
+  width: 250px;
+  background-color: #3c763d; /* Use your deep green for the sidebar background */
+  color: #ecf0f1;
+  padding: 30px 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15);
+  position: sticky;
+  top: 0;
+  left: 0;
+  height: 100vh;
+}
+
+.sidebar-header {
+  padding: 0 25px 30px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Slightly more visible separator */
+}
+
+.sidebar-header h3 {
+  font-size: 1.8em;
+  font-weight: 700;
+  color: #fdfdfd;
+  text-align: center;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-menu li {
+  margin-bottom: 10px;
+}
+
+.sidebar-menu a,
+.sidebar-menu button {
+  display: block;
+  padding: 15px 25px;
+  color: #f5fff2; /* Use your light green for default link color */
+  text-decoration: none;
+  font-size: 1.1em;
+  font-weight: 500;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border-left: 5px solid transparent;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  background: none;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+}
+
+.sidebar-menu a:hover,
+.sidebar-menu button:hover {
+  background-color: #f5fff2; /* Light green background on hover */
+  border-left-color: #3c763d; /* Deep green highlight on hover */
+  color: #3c763d; /* Deep green text on hover */
+}
+
+/* Active link style */
+.sidebar-menu a.active {
+  background-color: #f5fff2;
+  border-left-color: #3c763d;
+  color: #3c763d;
+}
+
+.sidebar-menu .logout-button {
+  margin-top: 40px;
+  background-color: #e74c3c; /* Keep red for logout, it's a standard visual cue */
+  border-left-color: #c0392b;
+  color: #ffffff; /* Ensure text is white */
+}
+
+.sidebar-menu .logout-button:hover {
+  background-color: #c0392b;
+  border-left-color: #9b2a1b;
+}

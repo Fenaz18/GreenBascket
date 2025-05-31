@@ -1,0 +1,120 @@
+/* src/pages/Dashboard.css */
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #eef2f6; /* Keeps a very light, neutral background for the entire page */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.dashboard-content {
+  flex-grow: 1; /* Allows content to take up remaining space */
+  padding: 40px;
+  background-color: #ffffff; /* White background for the main content area */
+  margin: 20px; /* Space around the content box */
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); /* Softer, more prominent shadow */
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-content h2 {
+  color: #3c763d; /* Use your deep green for main headings */
+  margin-bottom: 25px;
+  font-size: 2.2em;
+  font-weight: 600;
+  border-bottom: 2px solid #f5fff2; /* Subtle border using your light green */
+  padding-bottom: 15px;
+}
+
+.dashboard-content h3 {
+  color: #3c763d; /* Use your deep green for subheadings */
+  margin-top: 30px;
+  margin-bottom: 20px;
+  font-size: 1.6em;
+  font-weight: 500;
+}
+
+/* Welcome Message Styling */
+.dashboard-content > p { /* Targets the "Welcome, Guest" paragraph directly under dashboard-content */
+  color: #555; /* Neutral grey for general text */
+  font-size: 1.1em;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Product Grid Styling */
+.product-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Responsive grid */
+  gap: 25px; /* Space between cards */
+  flex-grow: 1; /* Allow product list to expand */
+}
+
+.product-card {
+  background-color: #ffffff; /* White background for individual cards */
+  border: 1px solid #f5fff2; /* Subtle light green border for cards */
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Lighter shadow for cards */
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease; /* Smooth hover effects */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+.product-card:hover {
+  transform: translateY(-5px); /* Lift effect on hover */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Enhanced shadow on hover */
+  border-color: #3c763d; /* Deep green border on hover */
+}
+
+.product-card h4 {
+  color: #3c763d; /* Deep green for product names */
+  font-size: 1.3em;
+  margin-bottom: 10px;
+  word-wrap: break-word;
+}
+
+.product-card p {
+  color: #666; /* Slightly darker grey for general product text */
+  font-size: 0.95em;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.product-card p:last-child {
+  font-weight: bold;
+  color: #3c763d; /* Deep green for price */
+  font-size: 1.1em;
+  margin-top: 15px;
+}
+
+/* Messages for Loading/Error/Empty State */
+.dashboard-content .message {
+  padding: 15px 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  font-size: 1.1em;
+  text-align: center;
+  font-weight: 500;
+  color: #333;
+  background-color: #f5fff2; /* Light green background for generic messages */
+  border: 1px solid #3c763d; /* Deep green border for generic messages */
+}
+
+.dashboard-content .error-message {
+  background-color: #ffe0e0; /* Standard light red for errors */
+  color: #c0392b; /* Standard dark red for errors */
+  border-color: #c0392b;
+}
+
+/* Empty state message */
+.dashboard-content .product-list + p { /* Targets the "No products available" paragraph */
+  color: #666;
+  font-size: 1.1em;
+  text-align: center;
+  margin-top: 30px;
+}

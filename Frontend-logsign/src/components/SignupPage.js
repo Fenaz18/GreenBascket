@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom'; // <-- Added for routing
 import './Auth.css';
+import { useNavigate } from 'react-router-dom';
 
-const SignupPage = () => {
+function SignupPage  ()  {
+const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -32,6 +35,7 @@ const SignupPage = () => {
     try {
       await axios.post('http://localhost:8080/api/users/register', formData);
       alert('Registration successful!');
+      navigate('/dashboard');
     } catch (err) {
       alert('Error during registration!');
     }
