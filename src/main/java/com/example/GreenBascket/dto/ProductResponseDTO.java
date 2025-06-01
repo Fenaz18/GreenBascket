@@ -9,13 +9,14 @@ public class ProductResponseDTO {
     private String description;
     private BigDecimal price;
     private Integer quantity;
-    private String imageUrl;
+    private String imageUrl; // Will hold the filename/path for the frontend to display
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    // Primary constructor for mapping Product entity to DTO
     public ProductResponseDTO(Long productId, String name, String description,
                               BigDecimal price, Integer quantity,
-                              String imageUrl,
+                              String imageUrl, // Include imageUrl
                               LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.productId = productId;
         this.name = name;
@@ -27,79 +28,28 @@ public class ProductResponseDTO {
         this.updatedAt = updatedAt;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+    // Getters and Setters
+    public Long getProductId() { return productId; }
+    public void setProductId(Long productId) { this.productId = productId; }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public BigDecimal getPrice() { return price; }
+    public void setPrice(BigDecimal price) { this.price = price; }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
+    public Integer getQuantity() { return quantity; }
+    public void setQuantity(Integer quantity) { this.quantity = quantity; }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
-    public String getName() {
-        return name;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public ProductResponseDTO(LocalDateTime createdAt, String description, String imageUrl, Long productId, BigDecimal price, String name, LocalDateTime updatedAt, Integer quantity) {
-        this.createdAt = createdAt;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.productId = productId;
-        this.price = price;
-        this.name = name;
-        this.updatedAt = updatedAt;
-        this.quantity = quantity;
-    }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }
-

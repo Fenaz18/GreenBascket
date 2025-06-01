@@ -1,29 +1,28 @@
 package com.example.GreenBascket.dto;
 
-
 import java.math.BigDecimal;
+import org.springframework.web.multipart.MultipartFile; // Important import
 
 public class ProductRequestDTO {
     private String name;
     private String description;
     private BigDecimal price;
     private Integer quantity;
-    private String imageUrl;
+    private MultipartFile imageFile; // Field to receive the uploaded image
 
-
-    // 1. ADD THIS NO-ARGUMENT CONSTRUCTOR (THIS IS THE PRIMARY FIX)
+    // Constructors (optional, but good practice)
     public ProductRequestDTO() {
-        // Default constructor needed by Jackson for deserialization
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
+    public ProductRequestDTO(String name, String description, BigDecimal price, Integer quantity, MultipartFile imageFile) {
+        this.name = name;
         this.description = description;
+        this.price = price;
+        this.quantity = quantity;
+        this.imageFile = imageFile;
     }
 
+    // Getters and Setters
     public String getName() {
         return name;
     }
@@ -32,12 +31,12 @@ public class ProductRequestDTO {
         this.name = name;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getDescription() {
+        return description;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public BigDecimal getPrice() {
@@ -56,12 +55,11 @@ public class ProductRequestDTO {
         this.quantity = quantity;
     }
 
-    public ProductRequestDTO(String description, String imageUrl, String name, Integer quantity, BigDecimal price) {
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.name = name;
-        this.quantity = quantity;
-        this.price = price;
+    public MultipartFile getImageFile() {
+        return imageFile;
+    }
+
+    public void setImageFile(MultipartFile imageFile) {
+        this.imageFile = imageFile;
     }
 }
-

@@ -1,15 +1,17 @@
+// src/pages/MyProductsPage.js
+
 import React, { useEffect, useState } from 'react';
 import Sidebar from '../components/Sidebar';
-import './MyProducts.css';
-import { useNavigate } from 'react-router-dom'; // Added for potential redirection
+import './MyProducts.css'; // Make sure this CSS file is present
+import { useNavigate } from 'react-router-dom';
 
 const MyProductsPage = () => {
-  const navigate = useNavigate(); // Initialize navigate hook
+  const navigate = useNavigate();
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [userRole, setUserRole] = useState('FARMER'); // Assuming static role for now, but should come from context
+  const [userRole, setUserRole] = useState('FARMER'); // Still static for sidebar, adjust as per your auth context
 
   useEffect(() => {
     const fetchMyProducts = async () => {
@@ -17,14 +19,22 @@ const MyProductsPage = () => {
       setError(null);
 
       const token = localStorage.getItem('jwtToken');
+      const farmerId = localStorage.getItem('userId'); // <--- ASSUMPTION: userId is stored as farmerId
+
       if (!token) {
         setError('Authentication token missing. Please log in.');
-        navigate('/login'); // Redirect to login if no token
+        navigate('/login');
+        return;
+      }
+      if (!farmerId) {
+        setError('Farmer ID not found. Please log in again.');
+        navigate('/login');
         return;
       }
 
       try {
-        const response = await fetch('http://localhost:8080/api/farmer/products', { // <--- CORRECTED URL HERE
+        // --- CRITICAL CHANGE: Include farmerId in the URL path ---
+        const response = await fetch(`http://localhost:8080/api/products/farmer/${farmerId}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -37,10 +47,9 @@ const MyProductsPage = () => {
             if (errorData && errorData.message) {
               errorMessage = errorData.message;
             } else if (errorData && typeof errorData === 'object') {
-              errorMessage = JSON.stringify(errorData); // Fallback for complex errors
+              errorMessage = JSON.stringify(errorData);
             }
           } catch (jsonError) {
-            // If response is not JSON, get it as text
             const plainTextError = await response.text();
             errorMessage = `Server responded with status ${response.status}: ${plainTextError}`;
           }
@@ -49,8 +58,9 @@ const MyProductsPage = () => {
             errorMessage = errorMessage.includes('expired') || errorMessage.includes('invalid')
                            ? 'Your session has expired or is invalid. Please log in again.'
                            : 'You are not authorized to view your products.';
-            localStorage.removeItem('jwtToken'); // Clear expired token
-            setTimeout(() => navigate('/login'), 2000); // Redirect after a short delay
+            localStorage.removeItem('jwtToken');
+            localStorage.removeItem('userId'); // Clear userId too
+            setTimeout(() => navigate('/login'), 2000);
           }
 
           throw new Error(errorMessage);
@@ -69,6 +79,53 @@ const MyProductsPage = () => {
 
     fetchMyProducts();
   }, [navigate]); // Add navigate to dependency array for useEffect
+
+  // Optional: Function to handle product deletion (you'll need to create a delete endpoint on backend)
+  const handleDeleteProduct = async (productId) => {
+    const confirmDelete = window.confirm('Are you sure you want to delete this product?');
+    if (!confirmDelete) return;
+
+    setLoading(true);
+    setError(null);
+
+    const token = localStorage.getItem('jwtToken');
+    const farmerId = localStorage.getItem('userId');
+
+    if (!token || !farmerId) {
+      setError('Authentication missing. Please log in.');
+      navigate('/login');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/products/${farmerId}/${productId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        let errorMessage = `Failed to delete product ID: ${productId}.`;
+        try {
+          const errorData = await response.json();
+          if (errorData && errorData.message) errorMessage = errorData.message;
+        } catch (e) { /* ignore */ }
+        throw new Error(errorMessage);
+      }
+
+      setProducts(products.filter(p => p.productId !== productId)); // Remove from state
+      setLoading(false);
+      alert('Product deleted successfully!');
+
+    } catch (err) {
+      console.error('Delete Product Error:', err);
+      setError(err.message || 'An error occurred during deletion.');
+      setLoading(false);
+    }
+  };
+
 
   if (loading) {
     return (
@@ -104,11 +161,33 @@ const MyProductsPage = () => {
             <p>You haven't added any products yet.</p>
           ) : (
             products.map(p => (
-              <div className="product-card" key={p.productId}> {/* Ensure you use productId as key */}
+              // --- ADDED CONSOLE.LOG HERE ---
+              // This will print the product ID and its imageUrl to your browser's console
+              // for every product being mapped.
+              console.log("Product ID:", p.productId, "Product Name:", p.name, "Image URL:", p.imageUrl),
+              // --- END CONSOLE.LOG ---
+
+              <div className="product-card" key={p.productId}>
+                {p.imageUrl && ( // This condition means the <img> tag only renders if p.imageUrl is not null, undefined, or empty string
+                  <img
+                    src={`http://localhost:8080/api/products/images/${p.imageUrl}`} // Construct image URL
+                    alt={p.name}
+                    className="product-image"
+                    onError={(e) => { e.target.onerror = null; e.target.src="https://via.placeholder.com/150?text=Image+Not+Found"; }} // Fallback for broken images
+                  />
+                )}
                 <h4>{p.name}</h4>
                 <p>{p.description}</p>
-                <p>₹{p.price}</p>
-                {/* Add more product details here if needed */}
+                <p>₹{p.price.toFixed(2)}</p> {/* Format price to 2 decimal places */}
+                <p>Quantity: {p.quantity}</p>
+                <p>Added: {new Date(p.createdAt).toLocaleDateString()}</p>
+
+                <div className="product-actions">
+                    {/* Add Edit Button/Link here (e.g., navigate to /edit-product/productId) */}
+                    <button className="delete-button" onClick={() => handleDeleteProduct(p.productId)} disabled={loading}>
+                        Delete
+                    </button>
+                </div>
               </div>
             ))
           )}

@@ -1,28 +1,210 @@
+/* src/pages/MyProducts.css */
+
 .my-products-container {
   display: flex;
-  height: 100vh;
+  height: 100vh; /* Full viewport height */
+  overflow: hidden; /* Prevent body scroll if content overflows */
 }
 
 .my-products-content {
-  flex: 1;
-  padding: 50px;
+  flex: 1; /* Allows content to take remaining space */
+  padding: 40px; /* Slightly adjusted padding */
+  overflow-y: auto; /* Enable scrolling for content if it overflows vertically */
+  box-sizing: border-box; /* Include padding in the element's total width and height */
+  margin-left: 250px; /* Offset for the fixed sidebar width (desktop) */
+  transition: margin-left 0.3s ease; /* Smooth transition if sidebar width changes */
 }
 
 .my-products-content h2 {
-  margin-bottom: 30px;
-  color: #3c763d;
+  margin-bottom: 25px; /* Adjusted margin */
+  color: #3c763d; /* Theme color */
+  font-size: 2.2em; /* Slightly smaller heading for better flow */
+  text-align: left; /* <--- CHANGED TO LEFT ALIGN */
+  padding-bottom: 10px; /* Adjusted padding */
+  border-bottom: 2px solid #d4e9d4; /* Subtle separator */
 }
 
+/* --- Product Grid --- */
 .product-grid {
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  flex-wrap: wrap; /* Allows cards to wrap to the next line */
+  gap: 20px; /* Adjusted gap for tighter grid */
+  justify-content: flex-start; /* <--- CHANGED TO LEFT ALIGN */
+  margin-top: 15px; /* Adjusted margin */
 }
 
+/* --- Product Card --- */
 .product-card {
-  background-color: #ecfdf5;
+  background-color: #ecfdf5; /* Light green background */
   border: 1px solid #d4e9d4;
   border-radius: 12px;
-  padding: 20px;
-  width: 220px;
+  padding: 20px; /* Increased padding for better content spacing */
+  width: 280px; /* Slightly wider for better content fit */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  display: flex; /* Flex container for internal elements */
+  flex-direction: column; /* Stack content vertically */
+  justify-content: space-between; /* Distribute space vertically */
+  align-items: flex-start; /* <--- CHANGED TO LEFT ALIGN */
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Smooth hover effects */
+}
+
+.product-card:hover {
+  transform: translateY(-5px); /* Lift effect on hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+}
+
+.product-image {
+  width: 100%; /* Image takes full width of the card */
+  height: 200px; /* Slightly taller for better visual */
+  object-fit: cover; /* Ensures image covers the area without distortion */
+  border-radius: 8px; /* Slightly rounded corners for the image */
+  margin-bottom: 10px;
+  border: 1px solid #c2e0c2; /* Light border around image */
+}
+
+.product-card h4 {
+  font-size: 1.3em;
+  color: #2e8b57; /* Darker green for product name */
+  margin-top: 5px;
+  margin-bottom: 8px;
+  text-align: left; /* <--- CHANGED TO LEFT ALIGN */
+}
+
+.product-card p {
+  font-size: 0.95em;
+  color: #555;
+  margin-bottom: 6px;
+  text-align: left; /* <--- CHANGED TO LEFT ALIGN */
+  line-height: 1.4;
+}
+
+.product-card p:first-of-type { /* For description */
+    min-height: 40px; /* Ensure description has some space */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit description to 2 lines */
+    -webkit-box-orient: vertical;
+}
+
+.product-card p:last-of-type { /* For price or quantity */
+    font-weight: bold;
+    color: #3c763d;
+}
+
+.product-actions {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px; /* Space between buttons */
+  width: 100%; /* Ensure actions take full width for centering */
+  justify-content: flex-start; /* <--- CHANGED TO LEFT ALIGN */
+}
+
+.delete-button {
+  background-color: #dc3545; /* Red for delete */
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px; /* Slightly more rounded buttons */
+  cursor: pointer;
+  font-size: 0.9em;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  flex: 1; /* Allow button to grow and fill space within product-actions */
+  max-width: 100px; /* Limit button width */
+}
+
+.delete-button:hover:not(:disabled) {
+  background-color: #c82333;
+  transform: translateY(-1px); /* Slight lift on hover */
+}
+
+.delete-button:disabled {
+  background-color: #e0e0e0;
+  color: #a0a0a0;
+  cursor: not-allowed;
+}
+
+/* --- Messages (Loading, Error, Success) --- */
+.message {
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.message.loading {
+  background-color: #e7f3ff;
+  color: #0056b3;
+  border: 1px solid #b3d9ff;
+}
+
+.message.error {
+  background-color: #ffebeb;
+  color: #cc0000;
+  border: 1px solid #ffcccc;
+}
+
+.message.success {
+  background-color: #e6ffe6;
+  color: #008000;
+  border: 1px solid #b3ffb3;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+  .my-products-content {
+    padding: 20px;
+    margin-left: 180px; /* Offset for narrower sidebar on tablets */
+  }
+
+  .my-products-content h2 {
+    font-size: 1.8em; /* Adjusted for smaller screens */
+    margin-bottom: 20px;
+  }
+
+  .product-card {
+    width: calc(50% - 15px); /* Two columns with gap */
+    max-width: none; /* Remove max-width constraint */
+    margin: 0; /* Remove auto margin */
+    padding: 15px; /* Adjusted padding */
+  }
+
+  .product-grid {
+    justify-content: center; /* Center cards in two columns */
+    gap: 15px; /* Adjusted gap */
+  }
+}
+
+@media (max-width: 480px) {
+  .my-products-content {
+    padding: 15px;
+    margin-left: 0; /* No offset for sidebar on mobile (sidebar becomes top bar) */
+  }
+  .my-products-content h2 {
+    font-size: 1.6em;
+    text-align: center; /* Center heading on very small screens for better readability */
+  }
+  .product-card {
+      width: 100%; /* Full width on very small screens */
+      max-width: 300px; /* Max width to prevent stretching too wide */
+      margin: 0 auto; /* Center individual cards */
+      padding: 15px; /* Consistent padding */
+      align-items: center; /* Center content within card on very small screens */
+  }
+  .product-image {
+      height: 160px; /* Adjusted height */
+  }
+  .product-card h4,
+  .product-card p {
+      text-align: center; /* Center text within card on very small screens */
+  }
+  .product-actions {
+      justify-content: center; /* Center buttons within card on very small screens */
+  }
+  .delete-button {
+      padding: 10px 12px; /* Adjusted padding */
+  }
 }

@@ -1,4 +1,4 @@
-package com.example.GreenBascket.config; // Assuming this is where your GlobalExceptionHandler is
+package com.example.GreenBascket.exception; // Assuming this is where your GlobalExceptionHandler is
 
 import com.example.GreenBascket.dto.MessageResponseDTO;
 import com.example.GreenBascket.exception.ResourceNotFoundException; // Import your custom exception if you have one

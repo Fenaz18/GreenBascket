@@ -1,80 +1,156 @@
+/* src/pages/AddProduct.css */
+
 .add-product-container {
   display: flex;
   height: 100vh;
+  overflow: hidden; /* Prevent body scroll if content overflows */
 }
 
-/* Change .add-product-form to .add-product-form-content */
 .add-product-form-content {
   flex: 1;
   padding: 50px;
-  /* Add messages styling if you included it earlier, e.g. */
-  padding-top: 20px; /* Adjust if needed */
-  padding-bottom: 20px; /* Adjust if needed */
+  overflow-y: auto; /* Enable scrolling for content if it overflows vertically */
+  box-sizing: border-box; /* Include padding in the element's total width and height */
 }
 
-.add-product-form-content h2 { /* Change this */
+.add-product-form-content h2 {
   color: #3c763d;
   margin-bottom: 30px;
+  font-size: 2.5em; /* Larger heading for prominence */
+  text-align: center; /* Center the heading */
+  padding-bottom: 15px;
+  border-bottom: 2px solid #d4e9d4; /* Subtle separator */
 }
 
-.add-product-form-content form { /* Change this */
+.add-product-form-content form {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-width: 400px;
-  margin: 0 auto; /* Center the form within its container */
+  max-width: 450px; /* Slightly increase max-width for better input line length */
+  margin: 20px auto; /* Add top/bottom margin for spacing */
+  padding: 30px; /* Add internal padding to the form itself for a "card" look */
+  background-color: #f7fcf7; /* Lighter background for the form area */
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Subtle shadow for depth */
 }
 
-.add-product-form-content input, /* Change this */
-.add-product-form-content textarea { /* Change this */
-  padding: 10px;
+.add-product-form-content input,
+.add-product-form-content textarea {
+  padding: 12px; /* Slightly more padding for better touch targets */
   border: 1px solid #b2d8b2;
-  border-radius: 6px;
+  border-radius: 8px; /* Slightly more rounded corners */
+  font-size: 1em; /* Ensure readability */
+  color: #333;
+  width: 100%; /* Ensure inputs take full width of form */
+  box-sizing: border-box; /* Include padding in width calculation */
 }
 
-.add-product-form-content button { /* Change this */
+.add-product-form-content textarea {
+  min-height: 100px; /* Give textarea a minimum height */
+  resize: vertical; /* Allow vertical resizing only */
+}
+
+.add-product-form-content button {
   background-color: #4caf50;
   color: white;
   border: none;
-  padding: 12px;
-  border-radius: 6px;
+  padding: 15px; /* More padding for a bolder button */
+  border-radius: 8px; /* Consistent rounded corners */
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease; /* Add a little transition */
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  font-size: 1.1em; /* Larger font size for the button */
 }
 
 .add-product-form-content button:hover:not([disabled]) {
   background-color: #45a049;
+  transform: translateY(-2px); /* Slight lift on hover */
 }
 
-/* Also ensure you have styles for your message classes */
-.message {
+/* Styles for the image preview */
+.image-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+  border: 1px dashed #d4e9d4; /* Dashed border to indicate upload area */
   padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 4px;
+  border-radius: 8px;
+  background-color: #f0fdf0; /* Light background for preview area */
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 200px; /* Control preview image size */
+  object-fit: contain; /* Ensure image fits without cropping */
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Styles for messages */
+.message {
+  padding: 15px; /* More padding for messages */
+  margin-bottom: 20px;
+  border-radius: 8px; /* Consistent rounded corners */
   font-weight: bold;
   text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08); /* Subtle shadow for messages */
+  line-height: 1.5; /* Better readability for messages */
 }
 
 .message.error {
-  background-color: #ffe0e0;
-  color: #d32f2f;
-  border: 1px solid #d32f2f;
+  background-color: #ffebeb; /* Lighter red for background */
+  color: #cc0000; /* Darker red for text */
+  border: 1px solid #ffcccc; /* Matching border */
 }
 
 .message.success {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-  border: 1px solid #2e7d32;
+  background-color: #e6ffe6; /* Lighter green for background */
+  color: #008000; /* Darker green for text */
+  border: 1px solid #b3ffb3; /* Matching border */
 }
 
 .message.loading {
-  background-color: #e0f7fa;
-  color: #00838f;
-  border: 1px solid #00838f;
+  background-color: #e7f3ff; /* Lighter blue for background */
+  color: #0056b3; /* Darker blue for text */
+  border: 1px solid #b3d9ff; /* Matching border */
 }
 
+/* Disabled button styling */
 button[disabled] {
-  background-color: #ccc;
+  background-color: #e0e0e0; /* Lighter gray for disabled */
+  color: #a0a0a0; /* Lighter text color */
   cursor: not-allowed;
+  transform: none; /* No lift effect when disabled */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .add-product-form-content {
+    padding: 20px;
+  }
+
+  .add-product-form-content h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+  }
+
+  .add-product-form-content form {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-product-form-content {
+    padding: 15px;
+  }
+  .add-product-form-content form {
+    padding: 15px;
+    gap: 15px;
+  }
+  .add-product-form-content button {
+    padding: 12px;
+    font-size: 1em;
+  }
 }

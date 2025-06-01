@@ -14,19 +14,21 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
-@Configuration // Mark this class as a Spring configuration class
-public class SecurityConfig { // Wrap your configuration in a class
+@Configuration
+public class SecurityConfig {
 
-    @Autowired // This is now correctly inside the class
+    @Autowired
     private JwtAuthenticationFilter jwtAuthFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> {
-                }) // Enable Spring Security CORS support
+                })
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        // Allow public access to image serving endpoint
+                        .requestMatchers("/api/products/images/**").permitAll() // <--- ADD THIS LINE HERE
                         .requestMatchers("/api/users/register", "/api/users/login").permitAll()
                         .requestMatchers("/api/farmer/**").hasRole("FARMER")
                         .requestMatchers("/api/consumer/**").hasRole("CONSUMER")
@@ -41,7 +43,8 @@ public class SecurityConfig { // Wrap your configuration in a class
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3002"));
+        // IMPORTANT: Confirm your React app's exact port. If it's still 3000, change this to "http://localhost:3000"
+        configuration.setAllowedOrigins(List.of("http://localhost:3001"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
@@ -49,5 +52,4 @@ public class SecurityConfig { // Wrap your configuration in a class
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 }
