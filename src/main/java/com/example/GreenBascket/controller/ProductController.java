@@ -30,14 +30,11 @@ public class ProductController {
         this.imageStorageService = imageStorageService;
     }
 
-    // --- NEW OPTIONAL ENDPOINT FOR GET /api/products ---
+    // --- UPDATED ENDPOINT FOR GET /api/products ---
     @GetMapping // Maps to /api/products
     public ResponseEntity<List<ProductResponseDTO>> getAllProducts() {
-        // You'll need to add a method like this in your ProductService
-        // Example: List<ProductResponseDTO> products = productService.findAllProducts();
-        // For now, let's return an empty list or throw an error if you don't intend this endpoint
-        // Or, implement a method to fetch all products for public listing if that's your goal.
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build(); // Or an empty list: ResponseEntity.ok(Collections.emptyList());
+        List<ProductResponseDTO> products = productService.getAllProducts(); // <--- Call the new service method
+        return ResponseEntity.ok(products); // <--- Return 200 OK with the list of products
     }
     // ----------------------------------------------------
 
@@ -94,11 +91,11 @@ public class ProductController {
                         .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
                         .body(resource);
             } else {
-                System.err.println("ProductController: Resource not found or not readable for path: " + filePath.toAbsolutePath().normalize()); // Added debug log here too
+                System.err.println("ProductController: Resource not found or not readable for path: " + filePath.toAbsolutePath().normalize());
                 return ResponseEntity.notFound().build();
             }
         } catch (IOException e) {
-            System.err.println("Error serving image: " + fileName + " - " + e.getMessage()); // Log actual error
+            System.err.println("Error serving image: " + fileName + " - " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

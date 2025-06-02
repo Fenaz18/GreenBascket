@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:3001") // Apply CORS globally to the controller
+@CrossOrigin(origins = "http://localhost:3004") // Apply CORS globally to the controller
 public class UserController {
 
     @Autowired
