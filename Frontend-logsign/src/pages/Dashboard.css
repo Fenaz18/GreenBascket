@@ -1,34 +1,90 @@
 /* src/pages/Dashboard.css */
 
+/* Basic reset for better consistency (should ideally be global) */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #f8f8f8;
+}
+
+/* Main Dashboard Container */
 .dashboard-container {
-  display: flex;
+  display: flex; /* Enables side-by-side layout with sidebar on larger screens */
   min-height: 100vh;
-  background-color: #eef2f6; /* Keeps a very light, neutral background for the entire page */
+  background-color: #eef2f6;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow-x: hidden; /* Prevents unwanted horizontal scrollbar */
 }
 
 .dashboard-content {
   flex-grow: 1; /* Allows content to take up remaining space */
   padding: 40px;
   background-color: #ffffff; /* White background for the main content area */
-  margin: 20px; /* Space around the content box */
   border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); /* Softer, more prominent shadow */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+
+  /* Default desktop margins */
+  margin-left: 270px; /* Sidebar width (250px) + desired gap (20px) = 270px */
+  margin-right: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+
   display: flex;
   flex-direction: column;
+  transition: margin-left 0.3s ease, margin-right 0.3s ease, padding 0.3s ease; /* Smooth transition for responsiveness */
+}
+
+/* Header Section Styling */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.dashboard-header h1 {
+    font-size: 2.2em;
+    color: #3c763d;
+    margin: 0;
+    font-weight: 600;
+}
+
+/* Logout Button Styling */
+.logout-button {
+    background-color: #e74c3c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.0em;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logout-button:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
 }
 
 .dashboard-content h2 {
-  color: #3c763d; /* Use your deep green for main headings */
+  color: #3c763d;
   margin-bottom: 25px;
   font-size: 2.2em;
   font-weight: 600;
-  border-bottom: 2px solid #f5fff2; /* Subtle border using your light green */
+  border-bottom: 2px solid #f5fff2;
   padding-bottom: 15px;
 }
 
 .dashboard-content h3 {
-  color: #3c763d; /* Use your deep green for subheadings */
+  color: #3c763d;
   margin-top: 30px;
   margin-bottom: 20px;
   font-size: 1.6em;
@@ -36,8 +92,8 @@
 }
 
 /* Welcome Message Styling */
-.dashboard-content > p { /* Targets the "Welcome, Guest" paragraph directly under dashboard-content */
-  color: #555; /* Neutral grey for general text */
+.dashboard-content > p {
+  color: #555;
   font-size: 1.1em;
   margin-bottom: 20px;
   text-align: center;
@@ -46,50 +102,82 @@
 /* Product Grid Styling */
 .product-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Responsive grid */
-  gap: 25px; /* Space between cards */
-  flex-grow: 1; /* Allow product list to expand */
+  /* Start with a flexible grid that can shrink more */
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 25px;
+  flex-grow: 1;
 }
 
 .product-card {
-  background-color: #ffffff; /* White background for individual cards */
-  border: 1px solid #f5fff2; /* Subtle light green border for cards */
+  background-color: #ffffff;
+  border: 1px solid #f5fff2;
   border-radius: 10px;
   padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Lighter shadow for cards */
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease; /* Smooth hover effects */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: flex-start; /* Align contents to the left within the card */
   overflow: hidden;
 }
 
 .product-card:hover {
-  transform: translateY(-5px); /* Lift effect on hover */
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Enhanced shadow on hover */
-  border-color: #3c763d; /* Deep green border on hover */
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border-color: #3c763d;
+}
+
+/* Product Image Styling */
+.product-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background-color: #f0f0f0;
 }
 
 .product-card h4 {
-  color: #3c763d; /* Deep green for product names */
+  color: #3c763d;
   font-size: 1.3em;
   margin-bottom: 10px;
   word-wrap: break-word;
 }
 
 .product-card p {
-  color: #666; /* Slightly darker grey for general product text */
+  color: #666;
   font-size: 0.95em;
   line-height: 1.5;
   margin-bottom: 8px;
 }
 
-.product-card p:last-child {
+.product-card p:last-child { /* Targets the price/quantity line */
   font-weight: bold;
-  color: #3c763d; /* Deep green for price */
+  color: #3c763d;
   font-size: 1.1em;
   margin-top: 15px;
+}
+
+/* Add to Cart Button Styling */
+.add-to-cart-button {
+    background-color: #5cb85c;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95em;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: auto; /* Pushes the button to the bottom */
+    align-self: flex-start; /* Aligns button to the left */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.add-to-cart-button:hover {
+    background-color: #4cae4c;
+    transform: translateY(-1px);
 }
 
 /* Messages for Loading/Error/Empty State */
@@ -101,20 +189,148 @@
   text-align: center;
   font-weight: 500;
   color: #333;
-  background-color: #f5fff2; /* Light green background for generic messages */
-  border: 1px solid #3c763d; /* Deep green border for generic messages */
+  background-color: #f5fff2;
+  border: 1px solid #3c763d;
 }
 
 .dashboard-content .error-message {
-  background-color: #ffe0e0; /* Standard light red for errors */
-  color: #c0392b; /* Standard dark red for errors */
+  background-color: #ffe0e0;
+  color: #c0392b;
   border-color: #c0392b;
 }
 
 /* Empty state message */
-.dashboard-content .product-list + p { /* Targets the "No products available" paragraph */
+.dashboard-content .product-list + p {
   color: #666;
   font-size: 1.1em;
   text-align: center;
   margin-top: 30px;
+}
+
+/* --- RESPONSIVE ADJUSTMENTS --- */
+
+/* For screens between 769px and 1200px (Laptops/larger tablets) */
+@media (max-width: 1200px) {
+  .dashboard-content {
+    margin-left: 270px; /* Keep consistent with sidebar width */
+    margin-right: 15px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding: 30px;
+  }
+  .product-list {
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); /* Allow cards to be a bit smaller */
+    gap: 20px;
+  }
+  .product-image {
+      height: 160px;
+  }
+}
+
+/* For screens between 481px and 768px (Tablets) */
+@media (max-width: 768px) {
+  .dashboard-content {
+    /* Sidebar is 180px wide here according to your Sidebar.css */
+    margin-left: 200px; /* Sidebar width (180px) + gap (20px) = 200px */
+    margin-right: 15px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding: 25px;
+  }
+  .dashboard-header h1 {
+    font-size: 1.8em;
+  }
+  .logout-button {
+    padding: 8px 15px;
+    font-size: 0.9em;
+  }
+  .product-list {
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Even smaller card size */
+      gap: 15px;
+  }
+  .product-card {
+      padding: 15px;
+  }
+  .product-image {
+      height: 120px; /* Smaller image height */
+  }
+  .product-card h4 {
+      font-size: 1.1em; /* Smaller product name */
+  }
+  .product-card p {
+      font-size: 0.85em; /* Smaller text */
+  }
+  .product-card p:last-child {
+      font-size: 1em;
+  }
+  .add-to-cart-button {
+      padding: 8px 15px;
+      font-size: 0.85em;
+  }
+}
+
+/* For screens up to 480px (Mobile phones) */
+@media (max-width: 480px) {
+  .dashboard-container {
+      flex-direction: column; /* Sidebar and content stack vertically */
+  }
+  .dashboard-content {
+    /* Sidebar is now relative, so no specific margin-left needed for offset */
+    margin-left: 15px; /* General margin from screen edges */
+    margin-right: 15px;
+    margin-top: 15px; /* Space below stacked sidebar */
+    margin-bottom: 15px;
+    padding: 20px;
+    border-radius: 8px;
+    width: auto; /* Allow content to naturally fill remaining width */
+  }
+  .dashboard-header {
+      flex-direction: column; /* Stack header elements */
+      align-items: flex-start;
+      margin-bottom: 15px;
+  }
+  .dashboard-header h1 {
+      font-size: 1.6em;
+      margin-bottom: 10px;
+      text-align: left;
+      width: 100%;
+  }
+  .logout-button {
+      width: 100%; /* Full width button on mobile */
+      text-align: center;
+      padding: 10px 0;
+      margin-top: 10px;
+  }
+  .dashboard-content > p {
+      font-size: 1em;
+      text-align: left;
+  }
+  .dashboard-content h3 {
+      font-size: 1.4em;
+  }
+  .product-list {
+      grid-template-columns: 1fr; /* Single column on very small screens */
+      gap: 15px;
+  }
+  .product-card {
+      padding: 12px;
+  }
+  .product-image {
+      height: 100px; /* Even smaller image height for tiny screens */
+  }
+  .product-card h4 {
+      font-size: 1.1em;
+  }
+  .product-card p {
+      font-size: 0.8em;
+  }
+  .product-card p:last-child {
+      font-size: 0.9em;
+  }
+  .add-to-cart-button {
+      width: 100%; /* Full width button on mobile cards */
+      text-align: center;
+      padding: 10px 0;
+      align-self: stretch; /* Stretch to fill available width */
+  }
 }

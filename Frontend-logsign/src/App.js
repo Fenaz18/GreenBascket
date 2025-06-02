@@ -1,3 +1,4 @@
+// App.js (remains the same as your provided App.js)
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
@@ -30,9 +31,6 @@ const PrivateRoute = ({ children, allowedRoles }) => {
   // 2. Check if the user's role is allowed for this route
   if (allowedRoles && !allowedRoles.includes(userRole)) {
     // If the user's role is not in the allowedRoles for this route:
-    // Option A: Redirect to a "Forbidden" page
-    // return <Navigate to="/forbidden" replace />;
-    // Option B: Redirect to a general dashboard or login (as a fallback)
     console.warn(`Access Denied: User role '${userRole}' not allowed for this route.`);
     return <Navigate to="/login" replace />; // Or navigate to their allowed dashboard if you have a default
   }
@@ -100,9 +98,8 @@ function App() {
         />
 
         {/* Catch-all Route - Redirects any unmatched URL to the home page or login */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-        {/* Alternatively, for a more user-friendly experience, you could show a 404 page:
-        <Route path="*" element={<h1>404 - Page Not Found</h1>} /> */}
+        {/* Changed this from '/' to '/login' as per the user's implied need for auth-first behavior */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
   );

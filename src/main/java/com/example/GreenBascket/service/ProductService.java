@@ -11,4 +11,6 @@ public interface ProductService {
     void deleteProduct(String farmerId, Long productId);
     // You might want to add an update method too
     ProductResponseDTO updateProduct(String farmerId, Long productId, ProductRequestDTO productRequest);
+    List<ProductResponseDTO> getAllProducts(); // <--- Add this line
+
 }
