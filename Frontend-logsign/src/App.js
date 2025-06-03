@@ -1,4 +1,3 @@
-// App.js (remains the same as your provided App.js)
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
@@ -16,7 +15,7 @@ import AddProductPage from './pages/AddProductPage';
 import MyProductsPage from './pages/MyProductsPage';
 import ProfilePage from './pages/ProfilePage';
 
-// --- PrivateRoute Component ---
+// PrivateRoute Component
 // This component checks both authentication (JWT) and role for route access.
 const PrivateRoute = ({ children, allowedRoles }) => {
   const jwtToken = localStorage.getItem('jwtToken');
@@ -39,7 +38,7 @@ const PrivateRoute = ({ children, allowedRoles }) => {
   return children;
 };
 
-// --- App Component ---
+// App Component
 function App() {
   return (
     <BrowserRouter>
@@ -97,8 +96,7 @@ function App() {
           }
         />
 
-        {/* Catch-all Route - Redirects any unmatched URL to the home page or login */}
-        {/* Changed this from '/' to '/login' as per the user's implied need for auth-first behavior */}
+        {/* Catch-all Route - Redirects any unmatched URL to the login page */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>

@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Product")
+@Table(name = "products") // Changed table name for consistency, previously "Product"
 public class Product {
 
     @Id
@@ -16,8 +16,8 @@ public class Product {
     private Long productId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "farmerId", nullable = false)
-    private User farmer; // Assuming this refers to your com.example.GreenBascket.model.User
+    @JoinColumn(name = "farmer_id", nullable = false) // Consistent naming
+    private User farmer;
 
     @Column(nullable = false)
     private String name;
@@ -25,13 +25,13 @@ public class Product {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 10, scale = 2) // Price per unit (e.g., per KG)
     private BigDecimal price;
 
-    @Column(nullable = false)
-    private Integer quantity;
+    @Column(nullable = false, precision = 10, scale = 3) // Changed to BigDecimal for decimal quantities (e.g., 1.5 kg, 0.250 kg)
+    private BigDecimal availableQuantity; // Renamed for clarity: stock quantity
 
-    @Column(name = "imageUrl") // Stores the unique filename of the image
+    @Column(name = "image_url") // Consistent naming
     private String imageUrl;
 
     @CreationTimestamp
@@ -40,19 +40,21 @@ public class Product {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    // Manual No-ArgsConstructor
     public Product() {
     }
 
-    public Product(User farmer, String name, String description, BigDecimal price, Integer quantity, String imageUrl) {
+    // Manual All-ArgsConstructor (adjust if you need a different one)
+    public Product(User farmer, String name, String description, BigDecimal price, BigDecimal availableQuantity, String imageUrl) {
         this.farmer = farmer;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.quantity = quantity;
+        this.availableQuantity = availableQuantity;
         this.imageUrl = imageUrl;
     }
 
-    // Getters and Setters
+    // Manual Getters and Setters (ensure all are present and updated for BigDecimal quantities)
     public Long getProductId() { return productId; }
     public void setProductId(Long productId) { this.productId = productId; }
 
@@ -68,8 +70,8 @@ public class Product {
     public BigDecimal getPrice() { return price; }
     public void setPrice(BigDecimal price) { this.price = price; }
 
-    public Integer getQuantity() { return quantity; }
-    public void setQuantity(Integer quantity) { this.quantity = quantity; }
+    public BigDecimal getAvailableQuantity() { return availableQuantity; } // Updated return type
+    public void setAvailableQuantity(BigDecimal availableQuantity) { this.availableQuantity = availableQuantity; } // Updated parameter type
 
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
@@ -79,4 +81,6 @@ public class Product {
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+
 }
