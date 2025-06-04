@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:3000") // Apply CORS globally to the controller
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     @Autowired
@@ -24,46 +24,33 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // --- CRITICAL CHANGE START ---
     @PostMapping("/register")
     public ResponseEntity<UserResponseDTO> registerUser(@Valid @RequestBody RegisterRequestDTO dto) {
-        // Your frontend already checks password match, so this can remain commented or removed.
-        // if (!dto.getPassword().equals(dto.getConfirmPassword())) {
-        //     return ResponseEntity.badRequest().body(new MessageResponseDTO("Passwords do not match"));
-        // }
-
         User user = new User();
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
-        user.setRole(dto.getRole()); // Assuming dto.getRole() returns the Role enum
+        user.setRole(dto.getRole());
         user.setPhone(dto.getPhone());
         user.setLocation(dto.getLocation());
 
-        User registeredUser = userService.registerUser(user); // Get the saved user object
+        User registeredUser = userService.registerUser(user);
 
-        // Generate JWT token for the newly registered user
-        // You might generate it based on email (as in login) or user ID
-        // Ensure userService.loadUserByUsername can load the user *after* registration
-        // or directly use the user's email/ID to generate token.
         UserDetails userDetails = userService.loadUserByUsername(registeredUser.getEmail());
         String token = jwtUtil.generateToken(userDetails);
 
-        // Construct and return the UserResponseDTO
         UserResponseDTO responseDto = new UserResponseDTO(
-                registeredUser.getUserId(),
+                String.valueOf(registeredUser.getUserId()), // Convert Long to String for DTO
                 registeredUser.getName(),
                 registeredUser.getEmail(),
-                registeredUser.getRole(), // Ensure this is the correct Role enum
+                registeredUser.getRole(),
                 registeredUser.getPhone(),
                 registeredUser.getLocation(),
-                token // Include the generated token
+                token
         );
 
         return ResponseEntity.ok(responseDto);
     }
-    // --- CRITICAL CHANGE END ---
-
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> loginUser(@RequestBody LoginRequestDTO loginRequest) {
@@ -73,7 +60,8 @@ public class UserController {
         String token = jwtUtil.generateToken(userDetails);
 
         LoginResponseDTO response = new LoginResponseDTO(
-                user.getUserId(), user.getName(), user.getEmail(),
+                String.valueOf(user.getUserId()), // Convert Long to String for DTO
+                user.getName(), user.getEmail(),
                 user.getRole(), user.getLocation(), user.getPhone(), token
         );
 
@@ -85,8 +73,10 @@ public class UserController {
      * Maps to GET /api/users/profile
      */
     @GetMapping("/profile")
-    @PreAuthorize("isAuthenticated()") // Ensure user is authenticated
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserProfileResponseDTO> getUserProfile(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        // userPrincipal.getUserId() returns Long (from your UserPrincipal class).
+        // UserService.getUserProfile now expects a Long, so pass it directly.
         UserProfileResponseDTO profile = userService.getUserProfile(userPrincipal.getUserId());
         return ResponseEntity.ok(profile);
     }
@@ -96,10 +86,12 @@ public class UserController {
      * Maps to PUT /api/users/profile
      */
     @PutMapping("/profile")
-    @PreAuthorize("isAuthenticated()") // Ensure user is authenticated
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserProfileResponseDTO> updateUserProfile(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody UserProfileRequestDTO requestDTO) {
+        // userPrincipal.getUserId() returns Long (from your UserPrincipal class).
+        // UserService.updateUserProfile now expects a Long, so pass it directly.
         UserProfileResponseDTO updatedProfile = userService.updateUserProfile(userPrincipal.getUserId(), requestDTO);
         return ResponseEntity.ok(updatedProfile);
     }

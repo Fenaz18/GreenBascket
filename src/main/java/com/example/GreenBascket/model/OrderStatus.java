@@ -1,9 +1,8 @@
-package com.example.GreenBascket.model; // Or com.example.GreenBascket.enums
+package com.example.GreenBascket.model;
 
 public enum OrderStatus {
     PENDING,
     CONFIRMED,
-    PROCESSING,
     SHIPPED,
     DELIVERED,
     CANCELLED

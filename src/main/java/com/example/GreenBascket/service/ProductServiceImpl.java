@@ -7,20 +7,21 @@ import com.example.GreenBascket.model.Product;
 import com.example.GreenBascket.model.User;
 import com.example.GreenBascket.repository.ProductRepository;
 import com.example.GreenBascket.repository.UserRepo;
+import com.example.GreenBascket.repository.UserRepo; // Changed to UserRepository
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.math.BigDecimal; // <-- IMPORTANT: Make sure this import is present
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ProductServiceImpl implements ProductService { // <-- Ensure this line is correct
+public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
-    private final UserRepo userRepository;
+    private final UserRepo userRepository; // Injected UserRepository
     private final ImageStorageService imageStorageService;
 
     public ProductServiceImpl(ProductRepository productRepository, UserRepo userRepository, ImageStorageService imageStorageService) {
@@ -29,9 +30,10 @@ public class ProductServiceImpl implements ProductService { // <-- Ensure this l
         this.imageStorageService = imageStorageService;
     }
 
-    @Override // <-- This @Override should now be valid after interface update
-    public ProductResponseDTO addProduct(String farmerId, ProductRequestDTO request) {
-        User farmer = userRepository.findById(farmerId)
+    @Override
+    public ProductResponseDTO addProduct(Long farmerId, ProductRequestDTO request) {
+        // Use findByUserId to find the user by their userId (primary key)
+        User farmer = userRepository.findByUserId(farmerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Farmer not found with ID: " + farmerId));
 
         Product product = new Product();
@@ -39,7 +41,7 @@ public class ProductServiceImpl implements ProductService { // <-- Ensure this l
         product.setName(request.getName());
         product.setDescription(request.getDescription());
         product.setPrice(request.getPrice());
-        product.setAvailableQuantity(request.getQuantity()); // <-- FIX: Use setAvailableQuantity()
+        product.setAvailableQuantity(request.getQuantity());
 
         MultipartFile imageFile = request.getImageFile();
         if (imageFile != null && !imageFile.isEmpty()) {
@@ -55,9 +57,10 @@ public class ProductServiceImpl implements ProductService { // <-- Ensure this l
         return mapToResponse(savedProduct);
     }
 
-    @Override // <-- This @Override should now be valid
-    public List<ProductResponseDTO> getProductsByFarmer(String farmerId) {
-        userRepository.findById(farmerId)
+    @Override
+    public List<ProductResponseDTO> getProductsByFarmer(Long farmerId) {
+        // Validate farmer existence using findByUserId
+        userRepository.findByUserId(farmerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Farmer not found with ID: " + farmerId));
 
         List<Product> products = productRepository.findByFarmerUserId(farmerId);
@@ -66,11 +69,12 @@ public class ProductServiceImpl implements ProductService { // <-- Ensure this l
                 .collect(Collectors.toList());
     }
 
-    @Override // <-- This @Override should now be valid
-    public void deleteProduct(String farmerId, Long productId) {
+    @Override
+    public void deleteProduct(Long farmerId, Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
 
+        // Use getUserId() to match the User model's ID field
         if (!product.getFarmer().getUserId().equals(farmerId)) {
             throw new AccessDeniedException("Not authorized to delete this product.");
         }
@@ -80,16 +84,18 @@ public class ProductServiceImpl implements ProductService { // <-- Ensure this l
                 imageStorageService.deleteFile(product.getImageUrl());
             } catch (IOException e) {
                 // Log and handle the error, but don't prevent product deletion if file delete fails
+                System.err.println("Error deleting product image: " + product.getImageUrl() + " - " + e.getMessage());
             }
         }
         productRepository.delete(product);
     }
 
-    @Override // <-- This @Override should now be valid
-    public ProductResponseDTO updateProduct(String farmerId, Long productId, ProductRequestDTO request) {
+    @Override
+    public ProductResponseDTO updateProduct(Long farmerId, Long productId, ProductRequestDTO request) {
         Product existingProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
 
+        // Use getUserId() to match the User model's ID field
         if (!existingProduct.getFarmer().getUserId().equals(farmerId)) {
             throw new AccessDeniedException("Not authorized to update this product.");
         }
@@ -97,7 +103,7 @@ public class ProductServiceImpl implements ProductService { // <-- Ensure this l
         existingProduct.setName(request.getName());
         existingProduct.setDescription(request.getDescription());
         existingProduct.setPrice(request.getPrice());
-        existingProduct.setAvailableQuantity(request.getQuantity()); // <-- FIX: Use setAvailableQuantity()
+        existingProduct.setAvailableQuantity(request.getQuantity());
 
         MultipartFile newImageFile = request.getImageFile();
         if (newImageFile != null && !newImageFile.isEmpty()) {
@@ -105,7 +111,7 @@ public class ProductServiceImpl implements ProductService { // <-- Ensure this l
                 try {
                     imageStorageService.deleteFile(existingProduct.getImageUrl());
                 } catch (IOException e) {
-                    // Log but continue
+                    System.err.println("Error deleting old product image: " + existingProduct.getImageUrl() + " - " + e.getMessage());
                 }
             }
             try {
@@ -120,7 +126,7 @@ public class ProductServiceImpl implements ProductService { // <-- Ensure this l
         return mapToResponse(updatedProduct);
     }
 
-    @Override // <-- This @Override should now be valid
+    @Override
     public List<ProductResponseDTO> getAllProducts() {
         List<Product> products = productRepository.findAll();
         return products.stream()
@@ -134,7 +140,7 @@ public class ProductServiceImpl implements ProductService { // <-- Ensure this l
                 product.getName(),
                 product.getDescription(),
                 product.getPrice(),
-                product.getAvailableQuantity(), // <-- FIX: Use getAvailableQuantity()
+                product.getAvailableQuantity(),
                 product.getImageUrl(),
                 product.getCreatedAt(),
                 product.getUpdatedAt()

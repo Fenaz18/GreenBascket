@@ -1,16 +1,10 @@
 package com.example.GreenBascket.model;
 
 import jakarta.persistence.*;
-// Removed Lombok annotations (if they were present)
-// import lombok.Data;
-// import lombok.NoArgsConstructor;
-// import lombok.ToString;
-
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "order_items")
-// Removed Lombok annotations
 public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,31 +12,39 @@ public class OrderItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
-    // @ToString.Exclude // Remove if you removed Lombok completely
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
-    // @ToString.Exclude // Remove if you removed Lombok completely
     private Product product;
 
-    @Column(name = "product_name", nullable = false)
+    @Column(nullable = false)
     private String productName;
 
-    @Column(name = "product_image_url")
     private String productImageUrl;
 
-    @Column(precision = 10, scale = 3) // Changed to BigDecimal for decimal quantities
+    @Column(nullable = false, precision = 10, scale = 3)
     private BigDecimal quantity;
 
-    @Column(name = "price_per_unit", nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal pricePerUnit;
 
-    // Manual No-ArgsConstructor
+    // --- Constructors ---
     public OrderItem() {
+        // No-argument constructor required by JPA
     }
 
-    // Manual Constructor (update parameter type)
+    public OrderItem(Long id, Order order, Product product, String productName, String productImageUrl, BigDecimal quantity, BigDecimal pricePerUnit) {
+        this.id = id;
+        this.order = order;
+        this.product = product;
+        this.productName = productName;
+        this.productImageUrl = productImageUrl;
+        this.quantity = quantity;
+        this.pricePerUnit = pricePerUnit;
+    }
+
+    // Specific constructor used in OrderService
     public OrderItem(Order order, Product product, String productName, String productImageUrl, BigDecimal quantity, BigDecimal pricePerUnit) {
         this.order = order;
         this.product = product;
@@ -52,25 +54,61 @@ public class OrderItem {
         this.pricePerUnit = pricePerUnit;
     }
 
-    // Manual Getters and Setters (ensure all are present and updated for BigDecimal quantity)
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    // --- Getters ---
+    public Long getId() {
+        return id;
+    }
 
-    public Order getOrder() { return order; }
-    public void setOrder(Order order) { this.order = order; }
+    public Order getOrder() {
+        return order;
+    }
 
-    public String getProductName() { return productName; }
-    public void setProductName(String productName) { this.productName = productName; }
+    public Product getProduct() {
+        return product;
+    }
 
-    public Product getProduct() { return product; }
-    public void setProduct(Product product) { this.product = product; }
+    public String getProductName() {
+        return productName;
+    }
 
-    public String getProductImageUrl() { return productImageUrl; }
-    public void setProductImageUrl(String productImageUrl) { this.productImageUrl = productImageUrl; }
+    public String getProductImageUrl() {
+        return productImageUrl;
+    }
 
-    public BigDecimal getQuantity() { return quantity; } // Updated return type
-    public void setQuantity(BigDecimal quantity) { this.quantity = quantity; } // Updated parameter type
+    public BigDecimal getQuantity() {
+        return quantity;
+    }
 
-    public BigDecimal getPricePerUnit() { return pricePerUnit; }
-    public void setPricePerUnit(BigDecimal pricePerUnit) { this.pricePerUnit = pricePerUnit; }
+    public BigDecimal getPricePerUnit() {
+        return pricePerUnit;
+    }
+
+    // --- Setters ---
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public void setProductImageUrl(String productImageUrl) {
+        this.productImageUrl = productImageUrl;
+    }
+
+    public void setQuantity(BigDecimal quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setPricePerUnit(BigDecimal pricePerUnit) {
+        this.pricePerUnit = pricePerUnit;
+    }
 }

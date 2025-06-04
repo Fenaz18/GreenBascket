@@ -30,17 +30,15 @@ public class ProductController {
         this.imageStorageService = imageStorageService;
     }
 
-    // --- UPDATED ENDPOINT FOR GET /api/products ---
-    @GetMapping // Maps to /api/products
+    @GetMapping
     public ResponseEntity<List<ProductResponseDTO>> getAllProducts() {
-        List<ProductResponseDTO> products = productService.getAllProducts(); // <--- Call the new service method
-        return ResponseEntity.ok(products); // <--- Return 200 OK with the list of products
+        List<ProductResponseDTO> products = productService.getAllProducts();
+        return ResponseEntity.ok(products);
     }
-    // ----------------------------------------------------
 
     @PostMapping("/{farmerId}")
     public ResponseEntity<ProductResponseDTO> addProduct(
-            @PathVariable String farmerId,
+            @PathVariable Long farmerId, // CHANGED TO LONG
             @ModelAttribute ProductRequestDTO productRequest,
             @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
 
@@ -50,14 +48,14 @@ public class ProductController {
     }
 
     @GetMapping("/farmer/{farmerId}")
-    public ResponseEntity<List<ProductResponseDTO>> getProductsByFarmer(@PathVariable String farmerId) {
+    public ResponseEntity<List<ProductResponseDTO>> getProductsByFarmer(@PathVariable Long farmerId) { // CHANGED TO LONG
         List<ProductResponseDTO> products = productService.getProductsByFarmer(farmerId);
         return ResponseEntity.ok(products);
     }
 
     @DeleteMapping("/{farmerId}/{productId}")
     public ResponseEntity<Void> deleteProduct(
-            @PathVariable String farmerId,
+            @PathVariable Long farmerId, // CHANGED TO LONG
             @PathVariable Long productId) {
         productService.deleteProduct(farmerId, productId);
         return ResponseEntity.noContent().build();
@@ -65,7 +63,7 @@ public class ProductController {
 
     @PutMapping("/{farmerId}/{productId}")
     public ResponseEntity<ProductResponseDTO> updateProduct(
-            @PathVariable String farmerId,
+            @PathVariable Long farmerId, // CHANGED TO LONG
             @PathVariable Long productId,
             @ModelAttribute ProductRequestDTO productRequest,
             @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
