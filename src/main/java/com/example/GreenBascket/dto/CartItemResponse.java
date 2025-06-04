@@ -2,12 +2,13 @@ package com.example.GreenBascket.dto;
 
 import java.math.BigDecimal;
 
+// No Lombok annotations here, already manually implemented
 public class CartItemResponse {
     private Long cartItemId;
     private Long productId;
     private String productName;
     private String productImageUrl;
-    private BigDecimal quantity; // Changed to BigDecimal
+    private BigDecimal quantity;
     private BigDecimal pricePerUnit;
     private BigDecimal subtotal;
 
@@ -24,7 +25,7 @@ public class CartItemResponse {
     public CartItemResponse() {
     }
 
-    // Getters and Setters (ensure quantity is BigDecimal)
+    // Getters and Setters
     public Long getCartItemId() { return cartItemId; }
     public void setCartItemId(Long cartItemId) { this.cartItemId = cartItemId; }
     public Long getProductId() { return productId; }
@@ -33,8 +34,8 @@ public class CartItemResponse {
     public void setProductName(String productName) { this.productName = productName; }
     public String getProductImageUrl() { return productImageUrl; }
     public void setProductImageUrl(String productImageUrl) { this.productImageUrl = productImageUrl; }
-    public BigDecimal getQuantity() { return quantity; } // Updated
-    public void setQuantity(BigDecimal quantity) { this.quantity = quantity; } // Updated
+    public BigDecimal getQuantity() { return quantity; }
+    public void setQuantity(BigDecimal quantity) { this.quantity = quantity; }
     public BigDecimal getPricePerUnit() { return pricePerUnit; }
     public void setPricePerUnit(BigDecimal pricePerUnit) { this.pricePerUnit = pricePerUnit; }
     public BigDecimal getSubtotal() { return subtotal; }

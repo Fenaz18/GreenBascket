@@ -1,27 +1,23 @@
-// CartResponse.java
+// src/main/java/com/example/GreenBascket/dto/CartResponse.java
 package com.example.GreenBascket.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-// Assume Lombok is working and providing boilerplate, or ensure manual constructors/getters/setters are correct
-// @Data // If using Lombok
-// @NoArgsConstructor // If using Lombok
-// @AllArgsConstructor // If using Lombok
 public class CartResponse {
     private Long cartId;
-    private Long userId; // Changed from String to Long
-    private List<CartItemResponse> items;
+    private Long userId;
+    private List<CartItemResponse> cartItems; // <--- RENAMED THIS FIELD!
     private BigDecimal totalAmount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    // Manual All-ArgsConstructor (ensure it's updated to Long userId)
-    public CartResponse(Long cartId, Long userId, List<CartItemResponse> items, BigDecimal totalAmount, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    // Manual All-ArgsConstructor (update 'items' to 'cartItems')
+    public CartResponse(Long cartId, Long userId, List<CartItemResponse> cartItems, BigDecimal totalAmount, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.cartId = cartId;
         this.userId = userId;
-        this.items = items;
+        this.cartItems = cartItems; // <--- Use the new field name
         this.totalAmount = totalAmount;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -31,13 +27,13 @@ public class CartResponse {
     public CartResponse() {
     }
 
-    // Manual Getters and Setters (ensure userId is Long)
+    // Manual Getters and Setters (update 'Items' to 'CartItems')
     public Long getCartId() { return cartId; }
     public void setCartId(Long cartId) { this.cartId = cartId; }
-    public Long getUserId() { return userId; } // Updated return type
-    public void setUserId(Long userId) { this.userId = userId; } // Updated parameter type
-    public List<CartItemResponse> getItems() { return items; }
-    public void setItems(List<CartItemResponse> items) { this.items = items; }
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
+    public List<CartItemResponse> getCartItems() { return cartItems; } // <--- Updated getter
+    public void setCartItems(List<CartItemResponse> cartItems) { this.cartItems = cartItems; } // <--- Updated setter
     public BigDecimal getTotalAmount() { return totalAmount; }
     public void setTotalAmount(BigDecimal totalAmount) { this.totalAmount = totalAmount; }
     public LocalDateTime getCreatedAt() { return createdAt; }

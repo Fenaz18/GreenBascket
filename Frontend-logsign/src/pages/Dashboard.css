@@ -1,5 +1,3 @@
-/* src/pages/Dashboard.css */
-
 /* Basic reset for better consistency (should ideally be global) */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -9,6 +7,7 @@ body {
   margin: 0;
   font-family: 'Inter', sans-serif;
   background-color: #f8f8f8;
+  line-height: 1.6; /* Ensure consistent line height */
 }
 
 /* Main Dashboard Container */
@@ -22,12 +21,14 @@ body {
 
 .dashboard-content {
   flex-grow: 1; /* Allows content to take up remaining space */
+  /* min-width: 0 is important for flex-grow to work well on smaller screens */
+  min-width: 0;
   padding: 40px;
   background-color: #ffffff; /* White background for the main content area */
   border-radius: 12px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 
-  /* Default desktop margins */
+  /* Default desktop margins based on your sidebar setup */
   margin-left: 270px; /* Sidebar width (250px) + desired gap (20px) = 270px */
   margin-right: 20px;
   margin-top: 20px;
@@ -46,18 +47,20 @@ body {
     margin-bottom: 30px;
     padding-bottom: 15px;
     border-bottom: 1px solid #e0e0e0;
+    flex-wrap: wrap; /* Allow elements to wrap on smaller screens */
 }
 
 .dashboard-header h1 {
     font-size: 2.2em;
-    color: #3c763d;
+    color: #3c763d; /* Green color for headings */
     margin: 0;
     font-weight: 600;
+    margin-right: 20px; /* Space from logout button */
 }
 
 /* Logout Button Styling */
 .logout-button {
-    background-color: #e74c3c;
+    background-color: #e74c3c; /* Red for logout */
     color: white;
     padding: 10px 20px;
     border: none;
@@ -67,6 +70,7 @@ body {
     font-weight: 500;
     transition: background-color 0.3s ease, transform 0.2s ease;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0; /* Prevent button from shrinking */
 }
 
 .logout-button:hover {
@@ -102,7 +106,6 @@ body {
 /* Product Grid Styling */
 .product-list {
   display: grid;
-  /* Start with a flexible grid that can shrink more */
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 25px;
   flex-grow: 1;
@@ -135,7 +138,7 @@ body {
     object-fit: cover;
     border-radius: 8px;
     margin-bottom: 15px;
-    background-color: #f0f0f0;
+    background-color: #f0f0f0; /* Placeholder background */
 }
 
 .product-card h4 {
@@ -161,7 +164,7 @@ body {
 
 /* Add to Cart Button Styling */
 .add-to-cart-button {
-    background-color: #5cb85c;
+    background-color: #5cb85c; /* Green for add to cart */
     color: white;
     padding: 10px 18px;
     border: none;
@@ -200,11 +203,165 @@ body {
 }
 
 /* Empty state message */
-.dashboard-content .product-list + p {
+.dashboard-content .product-list + p,
+.dashboard-content .cart-details + p { /* Added for cart empty state */
   color: #666;
   font-size: 1.1em;
   text-align: center;
   margin-top: 30px;
+}
+
+/* --- Cart Specific Styling --- */
+.cart-details {
+    display: flex;
+    flex-wrap: wrap; /* Allows sections to wrap on smaller screens */
+    gap: 30px; /* Space between item list and summary */
+    margin-top: 20px;
+}
+
+.cart-items-list {
+    flex: 2; /* Takes up more space in the row */
+    min-width: 300px; /* Ensures it doesn't get too small before wrapping */
+}
+
+.cart-item-card {
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    flex-wrap: wrap; /* Allows elements within the card to wrap */
+}
+
+.cart-item-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 15px;
+    flex-shrink: 0; /* Prevents image from shrinking */
+    background-color: #f0f0f0; /* Placeholder background */
+}
+
+.cart-item-info {
+    flex-grow: 1; /* Allows info section to take available space */
+    min-width: 150px; /* Ensures info doesn't get too narrow */
+    margin-right: 15px; /* Space between info and actions */
+}
+
+.cart-item-info h4 {
+    margin: 0 0 5px 0;
+    color: #3c763d;
+    font-size: 1.1em;
+}
+
+.cart-item-info p {
+    margin: 0 0 3px 0;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.cart-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between quantity input and remove button */
+    flex-wrap: wrap; /* Allows actions to wrap */
+}
+
+.quantity-container { /* Wrapper for quantity label and input */
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Space between label and input */
+}
+
+.quantity-input {
+    width: 60px; /* Fixed width for quantity input */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+    -moz-appearance: textfield; /* Remove number input arrows for Firefox */
+}
+/* Hide number input arrows for Chrome, Safari, Edge */
+.quantity-input::-webkit-outer-spin-button,
+.quantity-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.remove-button {
+    background-color: #dc3545; /* Red for remove button */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+.remove-button:hover:not(:disabled) {
+    background-color: #c82333;
+}
+
+.remove-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.cart-summary {
+    flex: 1; /* Takes up remaining space in the row */
+    min-width: 250px; /* Ensures it doesn't get too small before wrapping */
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 20px;
+    height: fit-content; /* Adjust height to content */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.cart-summary h3 {
+    color: #3c763d;
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.cart-summary p {
+    font-size: 1em;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.cart-summary h4 {
+    color: #5cb85c; /* Green for total amount */
+    font-size: 1.5em;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.checkout-button {
+    background-color: #5cb85c; /* Green for checkout button */
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.checkout-button:hover:not(:disabled) {
+    background-color: #4cae4c;
+}
+
+.checkout-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
 }
 
 /* --- RESPONSIVE ADJUSTMENTS --- */
@@ -218,6 +375,9 @@ body {
     margin-bottom: 15px;
     padding: 30px;
   }
+  .dashboard-header h1 {
+      font-size: 2em;
+  }
   .product-list {
     grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); /* Allow cards to be a bit smaller */
     gap: 20px;
@@ -225,24 +385,41 @@ body {
   .product-image {
       height: 160px;
   }
+  .cart-items-list {
+      min-width: 280px; /* Adjust min-width for cart list */
+  }
+  .cart-summary {
+      min-width: 220px; /* Adjust min-width for cart summary */
+  }
 }
 
 /* For screens between 481px and 768px (Tablets) */
 @media (max-width: 768px) {
   .dashboard-content {
-    /* Sidebar is 180px wide here according to your Sidebar.css */
+    /* Adjust margin-left based on sidebar width for this breakpoint (e.g., if sidebar is 180px) */
+    /* Assuming your Sidebar.css makes sidebar 180px wide here: */
     margin-left: 200px; /* Sidebar width (180px) + gap (20px) = 200px */
     margin-right: 15px;
     margin-top: 15px;
     margin-bottom: 15px;
     padding: 25px;
   }
+  .dashboard-header {
+      flex-direction: column; /* Stack header elements */
+      align-items: flex-start;
+      margin-bottom: 15px;
+      gap: 10px; /* Space between h1 and logout button */
+  }
   .dashboard-header h1 {
     font-size: 1.8em;
+    margin-bottom: 0; /* Remove bottom margin when stacked */
+    margin-right: 0;
+    width: 100%; /* Take full width when stacked */
   }
   .logout-button {
     padding: 8px 15px;
     font-size: 0.9em;
+    width: 100%; /* Full width button on tablets when stacked */
   }
   .product-list {
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Even smaller card size */
@@ -267,6 +444,53 @@ body {
       padding: 8px 15px;
       font-size: 0.85em;
   }
+
+  /* Cart specific adjustments for tablets */
+  .cart-details {
+      flex-direction: column; /* Stack cart items list and summary */
+      gap: 20px;
+  }
+  .cart-items-list,
+  .cart-summary {
+      min-width: unset; /* Remove min-width to allow full width */
+      flex: unset; /* Remove flex sizing */
+      width: 100%; /* Take full width */
+      padding: 15px; /* Adjust padding */
+  }
+  .cart-item-card {
+      flex-direction: column; /* Stack elements inside cart item card */
+      text-align: center;
+      padding: 10px;
+      align-items: center; /* Center items when stacked */
+  }
+  .cart-item-image {
+      margin: 0 auto 10px auto; /* Center image and add bottom margin */
+      width: 60px; /* Smaller image */
+      height: 60px;
+  }
+  .cart-item-info {
+      margin-right: 0; /* Remove right margin when stacked */
+      margin-bottom: 10px; /* Add bottom margin */
+      width: 100%; /* Take full width */
+  }
+  .cart-item-actions {
+      flex-direction: column; /* Stack actions */
+      gap: 10px;
+      width: 100%; /* Take full width */
+  }
+  .quantity-container {
+      flex-direction: row; /* Keep quantity label and input in a row */
+      justify-content: center;
+      width: 100%;
+  }
+  .quantity-input, .remove-button {
+      width: 80%; /* Adjust for better touch */
+      max-width: 150px; /* Limit width */
+  }
+  .checkout-button {
+      padding: 10px 15px;
+      font-size: 1em;
+  }
 }
 
 /* For screens up to 480px (Mobile phones) */
@@ -275,7 +499,7 @@ body {
       flex-direction: column; /* Sidebar and content stack vertically */
   }
   .dashboard-content {
-    /* Sidebar is now relative, so no specific margin-left needed for offset */
+    /* No specific margin-left needed for offset when sidebar is stacked */
     margin-left: 15px; /* General margin from screen edges */
     margin-right: 15px;
     margin-top: 15px; /* Space below stacked sidebar */
@@ -332,5 +556,20 @@ body {
       text-align: center;
       padding: 10px 0;
       align-self: stretch; /* Stretch to fill available width */
+  }
+  /* Cart specific adjustments for mobile */
+  .cart-item-card {
+      padding: 10px;
+  }
+  .quantity-container {
+      flex-direction: column; /* Stack label and input on very small screens */
+      gap: 3px;
+  }
+  .quantity-input {
+      width: 100%; /* Full width for input */
+  }
+  .remove-button {
+      width: 100%; /* Full width for remove button */
+      padding: 8px 0;
   }
 }

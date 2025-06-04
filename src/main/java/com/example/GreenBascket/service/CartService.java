@@ -9,7 +9,7 @@ import com.example.GreenBascket.model.User;
 import com.example.GreenBascket.repository.CartItemRepository;
 import com.example.GreenBascket.repository.CartRepository;
 import com.example.GreenBascket.repository.ProductRepository;
-import jakarta.transaction.Transactional;
+import jakarta.transaction.Transactional; // Using jakarta for Spring Boot 3+
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -35,17 +35,20 @@ public class CartService {
     }
 
     @Transactional
-    public CartResponse addProductToCart(Long productId, BigDecimal quantity) { // Quantity is now BigDecimal
+    public CartResponse addProductToCart(Long productId, BigDecimal quantity) {
         User currentUser = authService.getAuthenticatedUser();
         Cart cart = cartRepository.findByUser(currentUser)
                 .orElseGet(() -> cartRepository.save(new Cart(currentUser)));
 
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productId));
+                .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productId)); // Consider custom exception
 
-        // Use BigDecimal.compareTo for quantity comparison
-        if (product.getAvailableQuantity().compareTo(quantity) < 0) { // Changed to getAvailableQuantity()
-            throw new RuntimeException("Not enough stock for product: " + product.getName() + ". Available: " + product.getAvailableQuantity());
+        if (quantity.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Quantity must be positive.");
+        }
+
+        if (product.getAvailableQuantity().compareTo(quantity) < 0) {
+            throw new RuntimeException("Not enough stock for product: " + product.getName() + ". Available: " + product.getAvailableQuantity()); // Consider custom exception
         }
 
         Optional<CartItem> existingCartItem = cartItemRepository.findByCartIdAndProduct_productId(cart.getId(), productId);
@@ -53,118 +56,120 @@ public class CartService {
         CartItem cartItem;
         if (existingCartItem.isPresent()) {
             cartItem = existingCartItem.get();
-            // Add new quantity to existing quantity
-            cartItem.setQuantity(cartItem.getQuantity().add(quantity));
+            BigDecimal newTotalQuantity = cartItem.getQuantity().add(quantity);
+            // Re-check stock with the new total quantity if increasing existing item
+            if (product.getAvailableQuantity().compareTo(newTotalQuantity) < 0) {
+                throw new RuntimeException("Not enough stock to add more for product: " + product.getName() + ". Available: " + product.getAvailableQuantity() + ", Requested total: " + newTotalQuantity);
+            }
+            cartItem.setQuantity(newTotalQuantity);
         } else {
             cartItem = new CartItem(cart, product, quantity, product.getPrice());
-            cart.getCartItems().add(cartItem);
+            cart.getCartItems().add(cartItem); // Add to the collection in the parent Cart entity
         }
-        cartItemRepository.save(cartItem);
+        cartItemRepository.save(cartItem); // Save or update the cart item
+
+        cart.recalculateTotalAmount(); // Recalculate and update cart's total amount
+        cartRepository.save(cart); // Save the updated cart
 
         return mapCartToCartResponse(cart);
     }
 
     @Transactional
-    public CartResponse updateCartItemQuantity(Long cartItemId, BigDecimal newQuantity) { // New method for update
+    public CartResponse updateCartItemQuantity(Long cartItemId, BigDecimal newQuantity) {
         User currentUser = authService.getAuthenticatedUser();
         CartItem cartItem = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new RuntimeException("Cart item not found with ID: " + cartItemId));
+                .orElseThrow(() -> new RuntimeException("Cart item not found with ID: " + cartItemId)); // ResourceNotFoundException
 
+        // Ensure the cart item belongs to the authenticated user's cart
         if (!cartItem.getCart().getUser().getUserId().equals(currentUser.getUserId())) {
-            throw new RuntimeException("Unauthorized: Cart item does not belong to current user.");
+            throw new RuntimeException("Unauthorized: Cart item does not belong to current user."); // AccessDeniedException
         }
 
         if (newQuantity.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new RuntimeException("Quantity must be positive. Use remove option to delete.");
+            // If new quantity is 0 or less, recommend removing the item
+            throw new IllegalArgumentException("Quantity must be positive. To remove, use the delete endpoint.");
         }
 
         Product product = cartItem.getProduct();
-        BigDecimal oldQuantity = cartItem.getQuantity();
-        BigDecimal quantityDifference = newQuantity.subtract(oldQuantity);
 
-        // Check if there's enough stock for the *additional* quantity needed
-        if (quantityDifference.compareTo(BigDecimal.ZERO) > 0) { // If increasing quantity
-            if (product.getAvailableQuantity().compareTo(quantityDifference) < 0) {
-                throw new RuntimeException("Insufficient stock to increase quantity. Available: " + product.getAvailableQuantity());
-            }
+        // Check if there's enough stock for the new total quantity
+        if (product.getAvailableQuantity().compareTo(newQuantity) < 0) {
+            throw new RuntimeException("Insufficient stock for product: " + product.getName() + ". Available: " + product.getAvailableQuantity() + ", Requested: " + newQuantity); // Custom exception
         }
-        // No need to revert stock here. The overall stock check for the *final* quantity will happen on order placement.
-        // Or, you can choose to reserve stock here if you want real-time stock reduction on cart add/update.
-        // For simplicity, we'll reserve/reduce stock only on order placement.
 
         cartItem.setQuantity(newQuantity);
         cartItemRepository.save(cartItem);
 
-        return mapCartToCartResponse(cartItem.getCart());
+        Cart cart = cartItem.getCart();
+        cart.recalculateTotalAmount(); // Recalculate and update cart's total amount
+        cartRepository.save(cart); // Save the updated cart
+
+        return mapCartToCartResponse(cart);
     }
 
     @Transactional
-    public void removeCartItem(Long cartItemId) { // New method for removal
+    public void removeCartItem(Long cartItemId) {
         User currentUser = authService.getAuthenticatedUser();
         CartItem cartItem = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new RuntimeException("Cart item not found with ID: " + cartItemId));
+                .orElseThrow(() -> new RuntimeException("Cart item not found with ID: " + cartItemId)); // ResourceNotFoundException
 
+        // Ensure the cart item belongs to the authenticated user's cart
         if (!cartItem.getCart().getUser().getUserId().equals(currentUser.getUserId())) {
-            throw new RuntimeException("Unauthorized: Cart item does not belong to current user.");
+            throw new RuntimeException("Unauthorized: Cart item does not belong to current user."); // AccessDeniedException
         }
 
-        // Remove from the cart's list of items
-        cartItem.getCart().getCartItems().remove(cartItem);
-        // Delete the item from the repository
-        cartItemRepository.delete(cartItem);
+        Cart cart = cartItem.getCart();
+        cart.getCartItems().remove(cartItem); // Remove from the collection in the parent Cart entity
+        cartItemRepository.delete(cartItem); // Delete the item from the repository
 
-        // No need to put stock back here. Stock reduction only happens on order placement.
+        cart.recalculateTotalAmount(); // Recalculate and update cart's total amount
+        cartRepository.save(cart); // Save the updated cart
     }
-
 
     public CartResponse getUserCart() {
         User currentUser = authService.getAuthenticatedUser();
         Cart cart = cartRepository.findByUser(currentUser)
-                .orElseThrow(() -> new RuntimeException("Cart not found for user."));
+                .orElseThrow(() -> new RuntimeException("Cart not found for user.")); // ResourceNotFoundException
         return mapCartToCartResponse(cart);
     }
 
     @Transactional // Helper method for OrderService
     public void validateCartAndDecrementStock(Cart cart) {
+        if (cart.getCartItems().isEmpty()) {
+            throw new RuntimeException("Cannot process empty cart."); // Consider InvalidOrderException
+        }
+
         for (CartItem item : cart.getCartItems()) {
             Product product = item.getProduct();
-            // Use BigDecimal.compareTo for quantity comparison
-            if (product.getAvailableQuantity().compareTo(item.getQuantity()) < 0) { // Changed to getAvailableQuantity()
+            if (product.getAvailableQuantity().compareTo(item.getQuantity()) < 0) {
                 throw new RuntimeException("Insufficient stock for product: " + product.getName() +
-                        ". Available: " + product.getAvailableQuantity() + ", Requested: " + item.getQuantity());
+                        ". Available: " + product.getAvailableQuantity() + ", Requested: " + item.getQuantity()); // InvalidOrderException
             }
-            // Use BigDecimal.subtract for quantity reduction
-            product.setAvailableQuantity(product.getAvailableQuantity().subtract(item.getQuantity())); // Changed to setAvailableQuantity()
+            product.setAvailableQuantity(product.getAvailableQuantity().subtract(item.getQuantity()));
             productRepository.save(product);
         }
     }
 
     private CartResponse mapCartToCartResponse(Cart cart) {
-        BigDecimal totalAmount = BigDecimal.ZERO;
-        List<CartItemResponse> itemResponses = cart.getCartItems().stream()
-                .map(item -> {
-                    BigDecimal subtotal = item.getPricePerUnit().multiply(item.getQuantity()); // BigDecimal multiplication
-                    return new CartItemResponse(
-                            item.getId(),
-                            item.getProduct().getProductId(),
-                            item.getProduct().getName(),
-                            item.getProduct().getImageUrl(),
-                            item.getQuantity(), // Now BigDecimal
-                            item.getPricePerUnit(),
-                            subtotal
-                    );
-                })
-                .collect(Collectors.toList());
+        cart.recalculateTotalAmount(); // Ensure total is up-to-date before mapping
 
-        totalAmount = itemResponses.stream()
-                .map(CartItemResponse::getSubtotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        List<CartItemResponse> itemResponses = cart.getCartItems().stream()
+                .map(item -> new CartItemResponse(
+                        item.getId(),
+                        item.getProduct().getProductId(),
+                        item.getProduct().getName(),
+                        item.getProduct().getImageUrl(),
+                        item.getQuantity(),
+                        item.getPricePerUnit(),
+                        item.getPricePerUnit().multiply(item.getQuantity())
+                ))
+                .collect(Collectors.toList());
 
         return new CartResponse(
                 cart.getId(),
-                cart.getUser().getUserId(),
+                cart.getUser().getUserId(), // Using getUserId()
                 itemResponses,
-                totalAmount,
+                cart.getTotalAmount(), // Use the calculated total from the Cart entity
                 cart.getCreatedAt(),
                 cart.getUpdatedAt()
         );
