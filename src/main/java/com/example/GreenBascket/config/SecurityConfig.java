@@ -28,11 +28,13 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         // Allow public access to image serving endpoint
-                        .requestMatchers("/api/products/images/**").permitAll() // <--- ADD THIS LINE HERE
+                        .requestMatchers("/api/products/images/**").permitAll()
                         .requestMatchers("/api/users/register", "/api/users/login").permitAll()
                         .requestMatchers("/api/farmer/**").hasRole("FARMER")
-                        .requestMatchers("/api/consumer/**").hasRole("CONSUMER")
-                        .anyRequest().authenticated()
+                        // ADD THIS LINE FOR CART ENDPOINTS
+                        .requestMatchers("/api/cart/**").hasRole("CONSUMER") // <--- ADD THIS LINE
+                        .requestMatchers("/api/consumer/**").hasRole("CONSUMER") // This rule might be redundant if /api/cart/** covers everything
+                        .anyRequest().authenticated() // All other requests MUST be authenticated
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin(login -> login.disable());
@@ -43,8 +45,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // IMPORTANT: Confirm your React app's exact port. If it's still 3000, change this to "http://localhost:3000"
-        configuration.setAllowedOrigins(List.of("http://localhost:3004"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Confirm your React app's port
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

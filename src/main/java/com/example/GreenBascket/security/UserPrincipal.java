@@ -6,12 +6,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 public class UserPrincipal implements UserDetails {
-    private final String userId;
+    private final Long userId; // This is Long
     private final String email;
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrincipal(String userId, String email, String password,
+    public UserPrincipal(Long userId, String email, String password, // Constructor expects Long
                          Collection<? extends GrantedAuthority> authorities) {
         this.userId = userId;
         this.email = email;
@@ -19,7 +19,7 @@ public class UserPrincipal implements UserDetails {
         this.authorities = authorities;
     }
 
-    public String getUserId() {
+    public Long getUserId() { // Getter returns Long
         return userId;
     }
 
@@ -50,5 +50,3 @@ public class UserPrincipal implements UserDetails {
     @Override
     public boolean isEnabled() { return true; }
 }
-
-

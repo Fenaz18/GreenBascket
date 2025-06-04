@@ -1,0 +1,163 @@
+/* Modal.css */
+.modal-overlay {
+    position: fixed; /* Stay in place even if page scrolls */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black background */
+    display: flex;
+    align-items: center; /* Vertically center */
+    justify-content: center; /* Horizontally center */
+    z-index: 1000; /* Ensure it's above other content */
+    opacity: 0; /* Start fully transparent */
+    animation: fadeIn 0.3s forwards; /* Animation for fade in */
+}
+
+.modal-content {
+    background-color: white;
+    padding: 25px 35px; /* Increased padding */
+    border-radius: 10px; /* Slightly more rounded corners */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+    width: 90%;
+    max-width: 480px; /* Slightly adjusted max-width */
+    text-align: center;
+    transform: scale(0.9); /* Start slightly smaller */
+    animation: scaleUp 0.3s forwards ease-out; /* Animation for scaling up */
+}
+
+/* Keyframes for animations */
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleUp {
+    to {
+        transform: scale(1);
+    }
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 20px; /* Added more space below title */
+    color: #333;
+    font-size: 1.8em; /* Larger title */
+}
+
+.modal-product-image {
+    max-width: 120px; /* Adjusted size */
+    max-height: 120px;
+    object-fit: cover;
+    border-radius: 6px; /* Softer corners */
+    margin-bottom: 15px;
+    border: 1px solid #eee; /* Light border for image */
+}
+
+.modal-content h3 { /* Product Name */
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.4em;
+    color: #444;
+}
+
+.modal-content p {
+    margin-bottom: 12px; /* Consistent spacing */
+    color: #555;
+    line-height: 1.5;
+}
+
+.modal-content p strong { /* "Available Quantity:" text */
+    color: #333;
+}
+
+.modal-actions {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px; /* Space between elements in the actions area */
+}
+
+.modal-actions label {
+    font-weight: bold;
+    margin-bottom: 3px; /* Reduced margin */
+    font-size: 0.95em;
+    color: #444;
+}
+
+.modal-actions .quantity-input {
+    padding: 10px; /* More padding */
+    border: 1px solid #ccc;
+    border-radius: 5px; /* Softer corners */
+    width: 100px; /* Wider input */
+    text-align: center;
+    font-size: 1.1em; /* Larger font in input */
+    margin-bottom: 15px; /* Space below input before error/buttons */
+}
+
+.modal-actions button {
+    padding: 12px 25px; /* More padding */
+    border: none;
+    border-radius: 6px; /* Softer corners */
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 500; /* Medium weight */
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    width: 70%; /* Make buttons a bit wider */
+    min-width: 150px;
+}
+
+.modal-actions button:hover {
+    transform: translateY(-1px); /* Slight lift on hover */
+}
+
+.modal-actions button:active {
+    transform: translateY(0px); /* Press down effect */
+}
+
+
+.modal-actions .confirm-button {
+    background-color: #28a745; /* Green */
+    color: white;
+}
+
+.modal-actions .confirm-button:hover {
+    background-color: #218838;
+}
+
+.modal-actions .confirm-button:disabled {
+    background-color: #94d3a2; /* Lighter green when disabled */
+    cursor: not-allowed;
+}
+
+.modal-actions .cancel-button {
+    background-color: #6c757d; /* Gray */
+    color: white;
+}
+
+.modal-actions .cancel-button:hover {
+    background-color: #5a6268;
+}
+
+.modal-actions .cancel-button:disabled {
+    background-color: #b0b6bb; /* Lighter gray when disabled */
+    cursor: not-allowed;
+}
+
+
+.modal-error-message {
+    color: #dc3545; /* Bootstrap danger color */
+    margin-top: 10px; /* Space above error */
+    margin-bottom: 5px; /* Space below error before buttons */
+    font-weight: 500; /* Medium weight */
+    font-size: 0.9em;
+    padding: 8px;
+    background-color: #f8d7da; /* Light red background */
+    border: 1px solid #f5c6cb; /* Reddish border */
+    border-radius: 4px;
+    width: 80%; /* Make error message box a bit wider */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+
+}

@@ -1,14 +1,12 @@
 package com.example.GreenBascket.dto;
 
+// Remove Lombok annotations if you're manually defining everything
+// import lombok.AllArgsConstructor;
+// import lombok.Data;
+// import lombok.NoArgsConstructor;
 
-// import lombok.AllArgsConstructor; // <<< REMOVE THIS if you're defining manually to avoid confusion
-
-
-// If you define the constructor manually, you typically don't need @AllArgsConstructor
-// as it can sometimes conflict or cause confusion.
-// Remove @AllArgsConstructor if you want to explicitly control the constructor.
 public class UserResponseDTO {
-    private String userId;
+    private String userId; // FIX: Changed to String
     private String name;
     private String email;
     private String role;
@@ -16,7 +14,8 @@ public class UserResponseDTO {
     private String location;
     private String token;
 
-    // --- CRITICAL CHANGE: Constructor arguments now match the field order ---
+    // --- Constructor ---
+    // FIX: Constructor argument for userId is String
     public UserResponseDTO(String userId, String name, String email, String role, String phone, String location, String token) {
         this.userId = userId;
         this.name = name;
@@ -27,59 +26,29 @@ public class UserResponseDTO {
         this.token = token;
     }
 
-    public String getEmail() {
-        return email;
+    // FIX: Add a no-argument constructor (essential for JSON deserialization by frameworks)
+    public UserResponseDTO() {
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getUserId() {
+    // --- Getters ---
+    public String getUserId() { // FIX: Return type is String
         return userId;
     }
+    public String getName() { return name; }
+    public String getEmail() { return email; }
+    public String getRole() { return role; }
+    public String getPhone() { return phone; }
+    public String getLocation() { return location; }
+    public String getToken() { return token; }
 
-    public void setUserId(String userId) {
+    // --- Setters ---
+    public void setUserId(String userId) { // FIX: Parameter type is String
         this.userId = userId;
     }
+    public void setName(String name) { this.name = name; }
+    public void setEmail(String email) { this.email = email; }
+    public void setRole(String role) { this.role = role; }
+    public void setPhone(String phone) { this.phone = phone; }
+    public void setLocation(String location) { this.location = location; }
+    public void setToken(String token) { this.token = token; }
 }

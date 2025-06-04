@@ -1,5 +1,7 @@
 package com.example.GreenBascket.service;
 
+import jakarta.annotation.PostConstruct; // For Spring Boot 3.x (Jakarta EE)
+// For Spring Boot 2.x, use: import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,30 +13,20 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
-// IMPORTANT: Use the correct import based on your Spring Boot version:
-// For Spring Boot 2.x:
-import jakarta.annotation.PostConstruct;// For Spring Boot 3.x (if you're using Java 17+ and newer Spring Boot):
-// import jakarta.annotation.PostConstruct;
-
-
 @Service
 public class ImageStorageService {
 
-    @Value("${upload.dir}")
-    private String uploadDirConfig; // Renamed to avoid confusion with the Path object
+    @Value("${upload.dir}") // This value must be set in your application.properties/yml
+    private String uploadDirConfig;
 
-    private Path rootLocation; // This will hold the absolute, normalized path to the uploads directory
+    private Path rootLocation;
 
-    // This method runs automatically after the 'uploadDirConfig' value is injected
     @PostConstruct
     public void init() {
         try {
-            // Resolve the configured relative path to an absolute, normalized path ONCE
             this.rootLocation = Paths.get(uploadDirConfig).toAbsolutePath().normalize();
-            Files.createDirectories(rootLocation); // Ensure the directory exists
-            // --- DEBUG LOG: Verify the root directory ---
+            Files.createDirectories(rootLocation);
             System.out.println("ImageStorageService initialized. Root upload directory: " + this.rootLocation);
-            // ------------------------------------------
         } catch (IOException e) {
             throw new RuntimeException("Could not initialize storage location: " + uploadDirConfig, e);
         }
@@ -48,29 +40,23 @@ public class ImageStorageService {
         }
 
         String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
-        Path filePath = this.rootLocation.resolve(uniqueFileName); // Use the pre-initialized rootLocation
+        Path filePath = this.rootLocation.resolve(uniqueFileName);
 
-        // --- DEBUG LOG: Verify the path where the file is being saved ---
         System.out.println("ImageStorageService: Storing file at: " + filePath.toAbsolutePath().normalize());
-        // ---------------------------------------------------------------
 
-        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING); // Add REPLACE_EXISTING for safety
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
         return uniqueFileName;
     }
 
     public void deleteFile(String fileName) throws IOException {
-        Path filePath = this.rootLocation.resolve(fileName); // Use the pre-initialized rootLocation
-        // --- DEBUG LOG: Verify the path where the file is being deleted from ---
+        Path filePath = this.rootLocation.resolve(fileName);
         System.out.println("ImageStorageService: Attempting to delete file from: " + filePath.toAbsolutePath().normalize());
-        // ----------------------------------------------------------------------
         Files.deleteIfExists(filePath);
     }
 
     public Path loadFile(String fileName) {
-        Path resolvedPath = this.rootLocation.resolve(fileName); // Use the pre-initialized rootLocation
-        // --- DEBUG LOG: Verify the path where the file is being loaded from ---
+        Path resolvedPath = this.rootLocation.resolve(fileName);
         System.out.println("ImageStorageService: Attempting to load file from: " + resolvedPath.toAbsolutePath().normalize());
-        // ---------------------------------------------------------------------
         return resolvedPath;
     }
 }
