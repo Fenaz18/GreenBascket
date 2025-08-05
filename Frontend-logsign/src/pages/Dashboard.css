@@ -21,7 +21,6 @@ body {
 
 .dashboard-content {
   flex-grow: 1; /* Allows content to take up remaining space */
-  /* min-width: 0 is important for flex-grow to work well on smaller screens */
   min-width: 0;
   padding: 40px;
   background-color: #ffffff; /* White background for the main content area */
@@ -101,6 +100,36 @@ body {
   font-size: 1.1em;
   margin-bottom: 20px;
   text-align: center;
+}
+
+/* Quick Links Section */
+.quick-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px; /* Space between buttons */
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.quick-links button {
+    background-color: #5cb85c; /* Green color for the quick links buttons */
+    color: white;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    flex: 1 1 200px; /* Allow buttons to grow but have a minimum width */
+    max-width: 300px;
+    text-align: center;
+}
+
+.quick-links button:hover {
+    background-color: #4cae4c;
+    transform: translateY(-3px);
 }
 
 /* Product Grid Styling */
@@ -364,6 +393,69 @@ body {
     cursor: not-allowed;
 }
 
+
+/* --- NEW: ORDER HISTORY STYLING --- */
+.order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.order-card {
+  background-color: #fcfcfc;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.order-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.order-card h4 {
+  color: #3c763d;
+  font-size: 1.2em;
+  margin-top: 0;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 8px;
+}
+
+.order-card p {
+  margin: 5px 0;
+  color: #555;
+  font-size: 0.95em;
+}
+
+.order-card h5 {
+  color: #3c763d;
+  font-size: 1em;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+.order-card ul {
+  list-style: disc;
+  padding-left: 20px;
+  margin: 0;
+  color: #666;
+}
+
+.order-card li {
+  font-size: 0.9em;
+  margin-bottom: 3px;
+}
+
+/* Style for order status (optional) */
+.order-card p:nth-child(4) { /* This targets the status paragraph */
+    font-weight: bold;
+}
+/* --- END ORDER HISTORY STYLING --- */
+
+
 /* --- RESPONSIVE ADJUSTMENTS --- */
 
 /* For screens between 769px and 1200px (Laptops/larger tablets) */
@@ -499,7 +591,6 @@ body {
       flex-direction: column; /* Sidebar and content stack vertically */
   }
   .dashboard-content {
-    /* No specific margin-left needed for offset when sidebar is stacked */
     margin-left: 15px; /* General margin from screen edges */
     margin-right: 15px;
     margin-top: 15px; /* Space below stacked sidebar */
@@ -557,6 +648,13 @@ body {
       padding: 10px 0;
       align-self: stretch; /* Stretch to fill available width */
   }
+
+  /* Quick links responsive adjustment for mobile */
+  .quick-links {
+    flex-direction: column;
+    gap: 10px;
+  }
+
   /* Cart specific adjustments for mobile */
   .cart-item-card {
       padding: 10px;
@@ -571,5 +669,10 @@ body {
   .remove-button {
       width: 100%; /* Full width for remove button */
       padding: 8px 0;
+  }
+
+  /* Order card responsive adjustment for mobile */
+  .order-card {
+    padding: 15px;
   }
 }
