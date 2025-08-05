@@ -331,6 +331,60 @@ function ConsumerDashboard() {
         }
     };
 
+    /**
+     * NEW: Handles the checkout process by calling the backend API.
+     */
+    const handleCheckout = async () => {
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+            alert('Session expired. Please log in again.');
+            navigate('/login');
+            return;
+        }
+
+        // Prevent checkout if cart is empty
+        if (!cartItems || !cartItems.cartItems || cartItems.cartItems.length === 0) {
+            alert("Your cart is empty. Please add items before checking out.");
+            return;
+        }
+
+        setLoading(true); // Start loading for the checkout action
+        setError(null);    // Clear previous errors
+
+        try {
+            const response = await fetch('http://localhost:8080/api/orders/place', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (!response.ok) {
+                let errorMessage = 'Failed to place order.';
+                try {
+                    const errorData = await response.json();
+                    errorMessage = errorData.message || errorMessage;
+                } catch (e) {
+                    errorMessage = `Server responded with status ${response.status}: ${await response.text()}`;
+                }
+                throw new Error(errorMessage);
+            }
+
+            const orderResponse = await response.json();
+            console.log('Order placed successfully:', orderResponse);
+            alert(`Order placed successfully! Your Order ID is: ${orderResponse.orderId}`);
+
+            // On success, clear the local cart state and navigate to orders page
+            setCartItems(null);
+            handleNavigateView('orders'); // Redirect to orders to see the new order
+
+        } catch (err) {
+            console.error('Error placing order:', err);
+            setError(err.message || 'An unexpected error occurred while placing your order.');
+            alert(`Error: ${err.message}`); // Show an alert for immediate feedback
+        } finally {
+            setLoading(false); // End loading
+        }
+    };
+
 
     const handleLogout = () => {
         // FIX: Specific removal of items from localStorage
@@ -370,6 +424,8 @@ function ConsumerDashboard() {
             </div>
         );
     }
+
+    const isCartEmpty = !cartItems || !cartItems.cartItems || cartItems.cartItems.length === 0;
 
     return (
         <div className="dashboard-container">
@@ -464,7 +520,7 @@ function ConsumerDashboard() {
                         {/* More specific loading indicator for cart actions */}
                         {loading && <p>Loading cart...</p>}
                         {/* Ensure cartItems and cartItems.cartItems are not null/undefined and length > 0 */}
-                        {!loading && cartItems && cartItems.cartItems && cartItems.cartItems.length > 0 ? (
+                        {!loading && !isCartEmpty ? (
                             <div className="cart-details">
                                 <div className="cart-items-list">
                                     {cartItems.cartItems.map((item) => (
@@ -508,7 +564,13 @@ function ConsumerDashboard() {
                                     <h3>Cart Summary</h3>
                                     <p>Total Items: {cartItems.cartItems.reduce((acc, item) => acc + item.quantity, 0)}</p>
                                     <h4>Total Amount: ₹{cartItems.totalAmount ? cartItems.totalAmount.toFixed(2) : '0.00'}</h4>
-                                    <button className="checkout-button" disabled={loading}>Proceed to Checkout</button>
+                                    <button
+                                        className="checkout-button"
+                                        onClick={handleCheckout}
+                                        disabled={loading || isCartEmpty}
+                                    >
+                                        {loading ? 'Processing...' : 'Proceed to Checkout'}
+                                    </button>
                                 </div>
                             </div>
                         ) : (
